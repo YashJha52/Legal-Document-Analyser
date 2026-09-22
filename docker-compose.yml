@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: legal_analyzer_app
+    ports:
+      - "8000:8000"
+    environment:
+      - BACKEND_HOST=0.0.0.0
+      - BACKEND_PORT=8000
+      - N_CTX=8192
+      - N_THREADS=4
+      - RAM_LIMIT_GB=8.0
+      - MODEL_REPO_ID=Qwen/Qwen2.5-1.5B-Instruct-GGUF
+      - MODEL_FILENAME=qwen2.5-1.5b-instruct-q4_k_m.gguf
+      - CHECKPOINTS_DIR=/app/models/checkpoints
+    volumes:
+      - ./models/checkpoints:/app/models/checkpoints
+      - ./data:/app/data
+    restart: unless-stopped

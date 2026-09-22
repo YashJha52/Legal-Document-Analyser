@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+python-multipart
+pydantic
+pdfplumber
+pypdf
+psutil
+python-dotenv
+httpx
+pytest
+huggingface-hub
+llama-cpp-python
+chromadb
+sentence-transformers

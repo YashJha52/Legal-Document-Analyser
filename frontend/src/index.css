@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root, .light {
+  --color-background: #fcf9f4;
+  --color-surface: #fcf9f4;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f6f3ee;
+  --color-surface-container: #f0ede9;
+  --color-surface-container-high: #ebe8e3;
+  --color-surface-container-highest: #e5e2dd;
+  --color-surface-dim: #dcdad5;
+  --color-surface-bright: #fcf9f4;
+  --color-primary: #110402;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #2d1b14;
+  --color-on-primary-container: #9d8177;
+  --color-secondary: #5f5c70;
+  --color-secondary-fixed: #e4dff8;
+  --color-secondary-fixed-dim: #c8c4db;
+  --color-on-secondary-fixed-variant: #474558;
+  --color-on-surface: #1c1c19;
+  --color-on-surface-variant: #4f4441;
+  --color-outline: #817470;
+  --color-outline-variant: #d3c3be;
+  --border-bento: #E8E2D6;
+}
+
+.dark {
+  --color-background: #051424;
+  --color-surface: #051424;
+  --color-surface-container-lowest: #010f1f;
+  --color-surface-container-low: #0d1c2d;
+  --color-surface-container: #122131;
+  --color-surface-container-high: #1c2b3c;
+  --color-surface-container-highest: #273647;
+  --color-surface-dim: #051424;
+  --color-surface-bright: #2c3a4c;
+  --color-primary: #adc6ff;
+  --color-on-primary: #002e6a;
+  --color-primary-container: #4d8eff;
+  --color-on-primary-container: #00285d;
+  --color-secondary: #bec6e0;
+  --color-secondary-fixed: #3f465c;
+  --color-secondary-fixed-dim: #283044;
+  --color-on-secondary-fixed-variant: #bec6e0;
+  --color-on-surface: #d4e4fa;
+  --color-on-surface-variant: #94a3b8;
+  --color-outline: #8c909f;
+  --color-outline-variant: #273647;
+  --border-bento: rgba(255, 255, 255, 0.08);
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-on-surface);
+    font-family: "Inter", sans-serif;
+  }
+}
+
+.bento-card {
+  background-color: var(--color-surface-container-lowest);
+  border-radius: 1.5rem;
+  border: 1px solid var(--border-bento);
+  box-shadow: 0 8px 32px -4px rgba(45, 27, 20, 0.04), 0 4px 12px -2px rgba(45, 27, 20, 0.02);
+  padding: 1.5rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.bento-card:hover {
+  box-shadow: 0 14px 44px -4px rgba(45, 27, 20, 0.08), 0 8px 20px -2px rgba(45, 27, 20, 0.03);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-surface-dim);
+  border-radius: 4px;
+}

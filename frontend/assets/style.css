@@ -1,0 +1,75 @@
+.main {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.metric-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.risk-badge-high {
+    background-color: #fee2e2;
+    color: #991b1b;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 16px;
+    display: inline-block;
+    border: 1px solid #f87171;
+}
+
+.risk-badge-medium {
+    background-color: #fef3c7;
+    color: #92400e;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 16px;
+    display: inline-block;
+    border: 1px solid #fbbf24;
+}
+
+.risk-badge-low {
+    background-color: #dcfce7;
+    color: #166534;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 16px;
+    display: inline-block;
+    border: 1px solid #4ade80;
+}
+
+.clause-box {
+    background-color: #f8fafc;
+    border-left: 4px solid #3b82f6;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+}
+
+.clause-box-high {
+    border-left-color: #ef4444;
+    background-color: #fff5f5;
+}
+
+.clause-box-medium {
+    border-left-color: #f59e0b;
+    background-color: #fffbeb;
+}
+
+.clause-box-low {
+    border-left-color: #10b981;
+    background-color: #f0fdf4;
+}
+
+.entity-chip {
+    background-color: #e0f2fe;
+    color: #0369a1;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+    margin: 2px;
+    display: inline-block;
+}
