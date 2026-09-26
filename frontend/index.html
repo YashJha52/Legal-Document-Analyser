@@ -3,13 +3,160 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lexis Obsidian — Legal Intelligence Bento Dashboard</title>
+    <title>Lexis Obsidian — Legal Document Simplifier & Analyzer</title>
+
+    <!-- Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+    <!-- Tailwind CSS with Stitch Theme Configuration -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary": "#ffffff",
+              "on-surface": "#1c1c19",
+              "tertiary-fixed": "#e8e2d6",
+              "secondary-fixed": "#e4dff8",
+              "secondary-fixed-dim": "#c8c4db",
+              "surface-container-low": "#f6f3ee",
+              "error": "#ba1a1a",
+              "on-primary": "#ffffff",
+              "surface-container": "#f0ede9",
+              "on-background": "#1c1c19",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-high": "#ebe8e3",
+              "on-tertiary": "#ffffff",
+              "outline-variant": "#d3c3be",
+              "on-tertiary-container": "#8b867c",
+              "on-secondary-fixed-variant": "#474558",
+              "secondary": "#5f5c70",
+              "on-tertiary-fixed-variant": "#4a473e",
+              "outline": "#817470",
+              "on-surface-variant": "#4f4441",
+              "primary-fixed-dim": "#e0c0b4",
+              "on-error": "#ffffff",
+              "surface-dim": "#dcdad5",
+              "tertiary-container": "#211f18",
+              "on-tertiary-fixed": "#1e1c14",
+              "inverse-primary": "#e0c0b4",
+              "tertiary-fixed-dim": "#cbc6ba",
+              "on-primary-fixed-variant": "#584239",
+              "on-error-container": "#93000a",
+              "inverse-on-surface": "#f3f0eb",
+              "on-secondary-fixed": "#1b1a2b",
+              "on-primary-container": "#9d8177",
+              "surface-container-highest": "#e5e2dd",
+              "surface-variant": "#e5e2dd",
+              "primary-container": "#2d1b14",
+              "on-primary-fixed": "#291710",
+              "tertiary": "#080603",
+              "background": "#fcf9f4",
+              "error-container": "#ffdad6",
+              "primary": "#110402",
+              "inverse-surface": "#31302d",
+              "on-secondary-container": "#656276",
+              "surface-tint": "#725950",
+              "surface-bright": "#fcf9f4",
+              "primary-fixed": "#fddbd0",
+              "surface": "#fcf9f4",
+              "secondary-container": "#e4dff8",
+              "risk-high": "#C62828",
+              "risk-medium": "#E65100",
+              "risk-low": "#2E7D32"
+            },
+            borderRadius: {
+              "DEFAULT": "0.25rem",
+              "lg": "0.5rem",
+              "xl": "0.75rem",
+              "2xl": "1rem",
+              "3xl": "1.5rem",
+              "full": "9999px"
+            },
+            spacing: {
+              "card-inner-padding": "24px",
+              "unit": "8px",
+              "margin-mobile": "16px",
+              "container-padding": "32px",
+              "bento-gap": "20px"
+            },
+            fontFamily: {
+              "headline": ["Hanken Grotesk", "sans-serif"],
+              "body": ["Inter", "sans-serif"],
+              "mono": ["JetBrains Mono", "monospace"]
+            },
+            boxShadow: {
+              "ambient": "0 8px 32px -4px rgba(45, 27, 20, 0.04), 0 4px 12px -2px rgba(45, 27, 20, 0.02)",
+              "bento-hover": "0 14px 44px -4px rgba(45, 27, 20, 0.08), 0 8px 20px -2px rgba(45, 27, 20, 0.03)"
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #fcf9f4;
+        color: #1c1c19;
+        font-family: "Inter", sans-serif;
+      }
+      .dark body {
+        background-color: #051424;
+        color: #d4e4fa;
+      }
+      .bento-card {
+        background-color: #ffffff;
+        border-radius: 1.5rem;
+        border: 1px solid #E8E2D6;
+        box-shadow: 0 8px 32px -4px rgba(45, 27, 20, 0.04), 0 4px 12px -2px rgba(45, 27, 20, 0.02);
+        padding: 1.5rem;
+        transition: all 0.2s ease-in-out;
+      }
+      .dark .bento-card {
+        background-color: #010f1f;
+        border-color: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.4);
+      }
+      .bento-card:hover {
+        box-shadow: 0 14px 44px -4px rgba(45, 27, 20, 0.08), 0 8px 20px -2px rgba(45, 27, 20, 0.03);
+      }
+      .material-symbols-outlined {
+        font-family: 'Material Symbols Outlined';
+        font-weight: normal;
+        font-style: normal;
+        font-size: 24px;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        -webkit-font-feature-settings: 'liga';
+        -webkit-font-smoothing: antialiased;
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #dcdad5;
+        border-radius: 4px;
+      }
+      .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #1c2b3c;
+      }
+    </style>
   </head>
-  <body class="bg-background text-on-surface antialiased transition-colors duration-200">
+  <body class="antialiased min-h-screen selection:bg-secondary-fixed selection:text-on-secondary-fixed-variant">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

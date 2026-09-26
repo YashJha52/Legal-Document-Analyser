@@ -1,87 +1,75 @@
 import React from "react"
 
 export default function Header({
+  activeTab,
   documentName,
-  telemetry,
-  isAnalyzing,
-  error,
   theme,
   toggleTheme
 }) {
-  const ramText = telemetry ? `${telemetry.ram_used_gb} GB / ${telemetry.ram_budget_gb} GB` : "1.6 GB / 8 GB"
+  const breadcrumbLabels = {
+    dashboard: "Document Overview",
+    documents: "Contract Repository",
+    risk: "Risk Assessment Studio",
+    settings: "Workspace Settings"
+  }
 
   return (
     <>
-      {/* Desktop TopAppBar */}
-      <header className="bg-background/80 backdrop-blur-md sticky top-0 w-full h-16 z-40 justify-between items-center px-8 border-b border-outline-variant hidden md:flex transition-colors">
+      {/* Desktop Top Header Bar */}
+      <header className="bg-background/90 backdrop-blur-md sticky top-0 w-full h-16 z-40 flex justify-between items-center px-8 border-b border-outline-variant transition-colors">
+        {/* Breadcrumbs */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 text-xs font-mono text-on-surface-variant bg-surface-container-high px-3.5 py-1.5 rounded-full border border-outline-variant">
-            <span className="w-2 h-2 rounded-full bg-secondary-fixed-dim animate-pulse" />
-            <span className="truncate max-w-xs">{documentName || "No document loaded"}</span>
-          </div>
-          <div className="flex items-center gap-2 text-xs font-mono text-on-surface-variant bg-surface-container px-3 py-1.5 rounded-full border border-outline-variant">
-            <span className="material-symbols-outlined text-[16px] text-primary">memory</span>
-            <span>RAM: {ramText}</span>
-          </div>
+          <span className="text-xs px-2.5 py-1 rounded-md bg-surface-container font-medium text-secondary font-mono">
+            Lexis Workspace
+          </span>
+          <span className="text-outline-variant font-mono">/</span>
+          <span className="text-xs font-semibold text-primary font-mono" id="breadcrumb-current">
+            {breadcrumbLabels[activeTab] || "Overview"}
+          </span>
+          {documentName && (
+            <>
+              <span className="text-outline-variant font-mono">/</span>
+              <span className="text-xs font-mono text-on-surface-variant truncate max-w-sm bg-surface-container-high px-2.5 py-0.5 rounded-full border border-outline-variant/60">
+                {documentName}
+              </span>
+            </>
+          )}
         </div>
 
+        {/* Top Right Utilities (Clean & Simplistic: System Status + Theme Toggle) */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 text-xs font-mono px-3.5 py-1.5 rounded-full border border-outline-variant bg-surface-container-lowest">
-            {isAnalyzing ? (
-              <span className="flex items-center gap-1.5 text-primary font-semibold">
-                <span className="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
-                Analyzing...
-              </span>
-            ) : error ? (
-              <span className="flex items-center gap-1.5 text-risk-high font-semibold">
-                <span className="material-symbols-outlined text-[16px]">error</span>
-                Analysis Error
-              </span>
-            ) : (
-              <span className="flex items-center gap-1.5 text-risk-low font-semibold">
-                <span className="material-symbols-outlined text-[16px]">check_circle</span>
-                Local Engine Ready
-              </span>
-            )}
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container text-[11px] font-mono text-secondary border border-outline-variant">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>NLP Engine Active (8GB Ready)</span>
           </div>
 
+          {/* Dark / Light Mode Toggle */}
           <button
             onClick={toggleTheme}
             title={`Switch to ${theme === "light" ? "Dark" : "Light"} mode`}
-            className="text-primary hover:opacity-80 transition-opacity p-2 rounded-full hover:bg-surface-container-high"
+            className="text-primary hover:text-secondary p-2 rounded-full hover:bg-surface-container-high border border-outline-variant transition-all"
           >
-            <span className="material-symbols-outlined text-[20px]">
+            <span className="material-symbols-outlined text-[18px]">
               {theme === "light" ? "dark_mode" : "light_mode"}
             </span>
           </button>
-
-          <button className="text-primary hover:opacity-80 transition-opacity p-2 rounded-full hover:bg-surface-container-high">
-            <span className="material-symbols-outlined text-[20px]">notifications</span>
-          </button>
-
-          <button className="text-primary hover:opacity-80 transition-opacity p-2 rounded-full hover:bg-surface-container-high">
-            <span className="material-symbols-outlined text-[20px]">help</span>
-          </button>
-
-          <div className="w-8 h-8 rounded-full overflow-hidden border border-outline-variant ml-1 shadow-sm">
-            <img
-              alt="User profile photo"
-              className="w-full h-full object-cover"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuArcgJLz38ygfbZ9FUWZq7xyTf_a4-xbLRFTOwBt-Qj4-k6Mik_GRX8wyYfSsHpQ1OcMeHJS_rTlZBjefMHSpc3HwFWM6d8SWHGoM8gTNrDdmuAdOqTaWxwWY7S9wo5_K9wQJUGfnPfihiywGvoVN2eGsHGnz1BmMonMFSS2ZntijiJsPeJpq3SWF9HNHclVnY9CCgqX9gayZOWlLSdwcRi0jHHOpDToeRndPDacQFRI_NtOtU6WM-D"
-            />
-          </div>
         </div>
       </header>
 
-      {/* Mobile Top Header */}
+      {/* Mobile Top Header Bar */}
       <header className="md:hidden bg-background border-b border-outline-variant sticky top-0 w-full h-16 z-40 flex justify-between items-center px-4">
-        <h1 className="font-headline text-lg text-primary font-bold">Lexis Obsidian</h1>
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-primary-container text-surface flex items-center justify-center">
+            <span className="material-symbols-outlined text-[18px] text-primary-fixed">balance</span>
+          </div>
+          <h1 className="font-headline text-base text-primary font-bold">Lexis Obsidian</h1>
+        </div>
         <div className="flex items-center gap-2">
           <button
             onClick={toggleTheme}
-            className="text-primary p-2 rounded-lg hover:bg-surface-container-high"
+            className="text-primary p-2 rounded-lg hover:bg-surface-container-high border border-outline-variant"
           >
-            <span className="material-symbols-outlined text-[20px]">
+            <span className="material-symbols-outlined text-[18px]">
               {theme === "light" ? "dark_mode" : "light_mode"}
             </span>
           </button>

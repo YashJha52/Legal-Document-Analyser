@@ -1,0 +1,42 @@
+MUTUAL NON-DISCLOSURE AGREEMENT
+
+This Mutual Non-Disclosure Agreement ("Agreement") is entered into as of January 15, 2024 ("Effective Date"), by and between Apex Innovations Inc., a Delaware corporation with its principal place of business at 100 Tech Blvd, San Francisco, CA 94105 ("Disclosing Party" or "Apex"), and BlueSky Data Labs LLC, a California limited liability company with its principal place of business at 250 Silicon Way, San Jose, CA 95113 ("Receiving Party" or "BlueSky"). Apex and BlueSky may collectively be referred to as the "Parties" or individually as a "Party."
+
+1. PURPOSE
+The Parties wish to explore a potential business relationship concerning AI software development and data infrastructure integration (the "Purpose"). In connection with the Purpose, each Party may disclose to the other Party certain confidential and proprietary technical and business information.
+
+2. CONFIDENTIAL INFORMATION
+"Confidential Information" means any non-public information disclosed by one Party to the other Party, either directly or indirectly, in writing, orally, or by inspection of tangible objects, including without limitation algorithms, source code, data sets, customer lists, financial forecasts, product roadmaps, and trade secrets. Confidential Information does not include information that: (a) is or becomes publicly known without breach of this Agreement; (b) was already known to the Receiving Party prior to disclosure; (c) is independently developed by the Receiving Party without reference to or reliance upon the Disclosing Party's Confidential Information; or (d) is rightfully received from a third party without duty of confidentiality.
+
+3. OBLIGATIONS OF RECEIVING PARTY
+The Receiving Party agrees to: (a) hold the Disclosing Party's Confidential Information in strict confidence; (b) use the same degree of care to prevent unauthorized disclosure as it uses for its own confidential information of like nature, but in no event less than a reasonable degree of care; (c) use Confidential Information solely for the Purpose; and (d) limit disclosure of Confidential Information to its employees, contractors, and legal advisors who have a need to know and who are bound by confidentiality obligations at least as restrictive as those contained herein.
+
+4. TERM AND TERMINATION
+This Agreement shall remain in effect for a period of two (2) years from the Effective Date, unless terminated earlier by either Party upon thirty (30) days prior written notice. The obligations of confidentiality under Section 3 shall survive the termination or expiration of this Agreement for a period of five (5) years, except for trade secrets, which shall remain confidential indefinitely.
+
+5. REMEDIES AND INJUNCTIVE RELIEF
+The Receiving Party acknowledges that any unauthorized disclosure or use of Confidential Information may cause irreparable harm for which monetary damages alone would be inadequate. Accordingly, the Disclosing Party shall be entitled to seek equitable relief, including injunction and specific performance, in addition to all other remedies available at law or in equity, without posting a bond.
+
+6. LIMITATION OF LIABILITY
+EXCEPT IN CASES OF GROSS NEGLIGENCE, WILLFUL MISCONDUCT, OR BREACH OF SECTION 3, NEITHER PARTY SHALL BE LIABLE TO THE OTHER FOR ANY INDIRECT, INCIDENTAL, CONSEQUENTIAL, SPECIAL, OR PUNITIVE DAMAGES ARISING OUT OF OR IN CONNECTION WITH THIS AGREEMENT. IN NO EVENT SHALL EITHER PARTY'S TOTAL AGGREGATE LIABILITY EXCEED $100,000.
+
+7. INDEMNIFICATION
+Each Party agrees to defend, indemnify, and hold harmless the other Party, its officers, directors, and employees from and against any third-party claims, liabilities, losses, or expenses (including reasonable attorneys' fees) arising out of any material breach of this Agreement by the indemnifying Party.
+
+8. GOVERNING LAW AND DISPUTE RESOLUTION
+This Agreement shall be governed by and construed in accordance with the laws of the State of California, without regard to its conflict of law principles. Any dispute arising out of or relating to this Agreement shall be resolved through binding arbitration administered by JAMS in San Francisco, California.
+
+9. MISCELLANEOUS
+This Agreement constitutes the entire understanding between the Parties regarding the subject matter hereof and supersedes all prior agreements, whether oral or written. No amendment or waiver of any provision of this Agreement shall be effective unless in writing and signed by authorized representatives of both Parties.
+
+IN WITNESS WHEREOF, the Parties have executed this Mutual Non-Disclosure Agreement as of the Effective Date.
+
+APEX INNOVATIONS INC.
+By: /s/ Sarah Jenkins
+Name: Sarah Jenkins
+Title: Chief Executive Officer
+
+BLUESKY DATA LABS LLC
+By: /s/ Michael Chang
+Name: Michael Chang
+Title: Managing Director

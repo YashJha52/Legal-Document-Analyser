@@ -1,0 +1,43 @@
+MASTER SOFTWARE AS A SERVICE (SAAS) AGREEMENT
+
+This Master SaaS Agreement ("Agreement") is dated October 1, 2023 ("Effective Date") by and between CloudScale Systems Ltd., an English corporation having its registered office at 14 Canary Wharf, London, UK ("Provider"), and Vertex Enterprise Solutions Inc., a Delaware corporation with offices at 500 Madison Ave, New York, NY 10022 ("Customer").
+
+1. SERVICES AND ACCESS
+Provider grants Customer a non-exclusive, non-transferable right to access and use Provider's enterprise analytics platform (the "Subscription Services") during the Subscription Term, subject to the terms and conditions of this Agreement.
+
+2. SERVICE LEVEL AGREEMENT (SLA) & AVAILABILITY
+Provider warrants that the Subscription Services will maintain an uptime commitment of at least 99.9% during each calendar month. In the event Provider fails to meet this availability target, Customer shall be entitled to service credits as set forth in Exhibit A. Customer's sole and exclusive remedy for downtime is the issuance of such service credits.
+
+3. FEES AND PAYMENT TERMS
+Customer shall pay all fees specified in the applicable Order Form within thirty (30) days from the invoice date. Late payments shall accrue interest at the rate of 1.5% per month or the maximum rate permitted by law. All fees are non-refundable except as expressly provided herein.
+
+4. INTELLECTUAL PROPERTY & DATA RIGHTS
+Provider retains all right, title, and interest in and to the Subscription Services, underlying algorithms, documentation, and any improvements or derivative works. Customer retains all ownership rights in and to all data uploaded by Customer ("Customer Data"). Provider shall implement industry-standard administrative, physical, and technical safeguards to protect Customer Data.
+
+5. CONFIDENTIALITY
+Each Party agrees to maintain the confidentiality of the other Party's proprietary information with the same standard of care used for its own confidential assets. Confidentiality obligations shall endure for three (3) years post-termination.
+
+6. WARRANTIES AND DISCLAIMERS
+Provider warrants that the Services will function materially in accordance with published documentation. EXCEPT AS EXPRESSLY PROVIDED, THE SERVICES ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+
+7. INDEMNIFICATION
+Provider shall defend Customer against any third-party claim alleging that Customer's authorized use of the Services infringes a valid patent, copyright, or trademark, and shall pay damages awarded by a court of competent jurisdiction. Customer shall defend and indemnify Provider against claims arising from Customer Data or unauthorized use.
+
+8. LIMITATION OF LIABILITY
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL EITHER PARTY'S AGGREGATE LIABILITY ARISING OUT OF OR RELATED TO THIS AGREEMENT EXCEED THE TOTAL AMOUNT PAID BY CUSTOMER HEREUNDER IN THE TWELVE (12) MONTHS PRECEDING THE INCIDENT GIVING RISE TO LIABILITY. NEITHER PARTY SHALL BE LIABLE FOR LOST PROFITS OR CONSEQUENTIAL DAMAGES.
+
+9. TERM AND TERMINATION
+The initial term shall be one (1) year. Either Party may terminate this Agreement immediately upon written notice if the other Party commits a material breach and fails to cure such breach within thirty (30) days of receiving written notice. Upon termination, Customer's access credentials shall be revoked immediately.
+
+10. GOVERNING LAW AND JURISDICTION
+This Agreement shall be governed by the laws of the State of New York, USA, without reference to conflict of laws principles. The state and federal courts located in New York County, New York shall have exclusive jurisdiction over any disputes.
+
+CLOUDSCALE SYSTEMS LTD.
+By: /s/ David Sterling
+Name: David Sterling
+Title: VP Global Sales
+
+VERTEX ENTERPRISE SOLUTIONS INC.
+By: /s/ Elena Rostova
+Name: Elena Rostova
+Title: Chief Technology Officer

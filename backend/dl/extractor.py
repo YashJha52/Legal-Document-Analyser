@@ -54,7 +54,7 @@ def get_llama_model():
         _LLAMA_MODEL = None
     return _LLAMA_MODEL
 
-def extract_clauses_and_entities_llm(text, max_tokens=1500):
+def extract_clauses_and_entities_llm(text, max_tokens=1800):
     llama_model = get_llama_model()
     if llama_model is None:
         return extract_clauses_and_entities_heuristic(text)
@@ -77,11 +77,14 @@ JSON format:
       "text": "original clause excerpt",
       "risk_level": "High",
       "risk_rationale": "Broad unilateral liability",
-      "plain_english_meaning": "You must pay for legal claims against them."
+      "plain_english_meaning": "You must pay for legal claims against them.",
+      "negotiation_tip": "Require mutual parity and cap indemnification."
     }}
   ],
   "risk_analysis": {{
     "overall_risk": "High",
+    "risk_score": 75,
+    "verdict": "High risk identified in indemnity clause.",
     "high_risk_count": 1,
     "medium_risk_count": 0,
     "low_risk_count": 0,

@@ -1,9 +1,5 @@
 import io
 import re
-try:
-    import pdfplumber
-except ImportError:
-    pdfplumber = None
 
 def clean_extracted_text(text):
     if not text:
