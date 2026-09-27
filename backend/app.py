@@ -30,6 +30,10 @@ app.mount("/assets", StaticFiles(directory=frontend_dist_path), name="assets")
 def root():
     return FileResponse(os.path.join(frontend_dist_path, "index.html"))
 
+@app.get("/bundle.js")
+def bundle_js():
+    return FileResponse(os.path.join(frontend_dist_path, "bundle.js"))
+
 if __name__ == "__main__":
     uvicorn.run(
         "backend.app:app",

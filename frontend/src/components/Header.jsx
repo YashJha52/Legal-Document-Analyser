@@ -7,17 +7,15 @@ export default function Header({
   toggleTheme
 }) {
   const breadcrumbLabels = {
-    dashboard: "Document Overview",
-    documents: "Contract Repository",
+    dashboard: "Document & Contract Intelligence",
+    documents: "Contract & Case Repository",
     risk: "Risk Assessment Studio",
     settings: "Workspace Settings"
   }
 
   return (
     <>
-      {/* Desktop Top Header Bar */}
       <header className="bg-background/90 backdrop-blur-md sticky top-0 w-full h-16 z-40 flex justify-between items-center px-8 border-b border-outline-variant transition-colors">
-        {/* Breadcrumbs */}
         <div className="flex items-center gap-3">
           <span className="text-xs px-2.5 py-1 rounded-md bg-surface-container font-medium text-secondary font-mono">
             Lexis Workspace
@@ -36,14 +34,12 @@ export default function Header({
           )}
         </div>
 
-        {/* Top Right Utilities (Clean & Simplistic: System Status + Theme Toggle) */}
         <div className="flex items-center gap-3">
           <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container text-[11px] font-mono text-secondary border border-outline-variant">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>NLP Engine Active (8GB Ready)</span>
+            <span>Legal NLP Engine Active</span>
           </div>
 
-          {/* Dark / Light Mode Toggle */}
           <button
             onClick={toggleTheme}
             title={`Switch to ${theme === "light" ? "Dark" : "Light"} mode`}
@@ -56,7 +52,6 @@ export default function Header({
         </div>
       </header>
 
-      {/* Mobile Top Header Bar */}
       <header className="md:hidden bg-background border-b border-outline-variant sticky top-0 w-full h-16 z-40 flex justify-between items-center px-4">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-primary-container text-surface flex items-center justify-center">

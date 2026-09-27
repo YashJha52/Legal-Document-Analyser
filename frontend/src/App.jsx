@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react"
 import Header from "./components/Header.jsx"
 import Sidebar from "./components/Sidebar.jsx"
-import DashboardHub from "./components/DashboardHub.jsx"
 import FileUpload from "./components/FileUpload.jsx"
 import RiskScorecard from "./components/RiskScorecard.jsx"
 import ExecutiveSummary from "./components/ExecutiveSummary.jsx"
@@ -11,166 +10,17 @@ import SplitViewModal from "./components/SplitViewModal.jsx"
 import DocumentsView from "./components/DocumentsView.jsx"
 import RiskAnalysisView from "./components/RiskAnalysisView.jsx"
 import SettingsView from "./components/SettingsView.jsx"
-
-const INITIAL_DOCUMENTS = [
-  {
-    id: "doc-1",
-    title: "Mutual Non-Disclosure Agreement (Apex & BlueSky)",
-    category: "nda",
-    parties: ["Apex Innovations Inc.", "BlueSky Data Labs LLC"],
-    jurisdiction: "California",
-    effective_date: "January 15, 2024",
-    word_count: 320,
-    token_count: 410,
-    risk_level: "Low",
-    summary: "Standard bilateral non-disclosure agreement protecting technical source code and business plans with 2-year term.",
-    text: `MUTUAL NON-DISCLOSURE AGREEMENT
-This Mutual Non-Disclosure Agreement ("Agreement") is entered into as of January 15, 2024 ("Effective Date"), by and between Apex Innovations Inc., a Delaware corporation, and BlueSky Data Labs LLC, a California limited liability company.
-1. PURPOSE. The Parties wish to explore a potential business relationship concerning AI software development and data infrastructure integration.
-2. CONFIDENTIAL INFORMATION. "Confidential Information" means any non-public information disclosed by one Party to the other Party, including source code, customer lists, and algorithms.
-3. OBLIGATIONS. The Receiving Party agrees to hold Confidential Information in strict confidence and use not less than reasonable care.
-4. TERM AND TERMINATION. This Agreement shall remain in effect for two (2) years from the Effective Date, unless terminated earlier upon thirty (30) days prior written notice.
-5. LIMITATION OF LIABILITY. IN NO EVENT SHALL EITHER PARTY'S TOTAL AGGREGATE LIABILITY EXCEED $100,000.
-6. INDEMNIFICATION. Each Party agrees to defend, indemnify, and hold harmless the other Party from third-party IP infringement claims.
-7. GOVERNING LAW. This Agreement shall be governed by the laws of the State of California.`
-  },
-  {
-    id: "doc-2",
-    title: "Master Software as a Service Agreement (CloudScale)",
-    category: "saas",
-    parties: ["CloudScale Systems Ltd.", "Vertex Enterprise Solutions Inc."],
-    jurisdiction: "New York",
-    effective_date: "October 1, 2023",
-    word_count: 410,
-    token_count: 530,
-    risk_level: "Medium",
-    summary: "Cloud analytics enterprise SaaS agreement with 99.9% uptime SLA, 12-month fees liability cap, and Net 30 payment terms.",
-    text: `MASTER SOFTWARE AS A SERVICE (SAAS) AGREEMENT
-This Master SaaS Agreement is dated October 1, 2023 by and between CloudScale Systems Ltd. ("Provider") and Vertex Enterprise Solutions Inc. ("Customer").
-1. SERVICES AND ACCESS. Provider grants Customer a non-exclusive right to access the enterprise analytics platform.
-2. SERVICE LEVEL AGREEMENT (SLA). Provider warrants 99.9% monthly availability. Service credits are Customer's sole remedy for downtime.
-3. FEES AND PAYMENT. Customer shall pay invoices within thirty (30) days. Late payments accrue 1.5% monthly interest.
-4. INTELLECTUAL PROPERTY. Provider retains all rights to the SaaS platform. Customer retains ownership of all Customer Data.
-5. CONFIDENTIALITY. Obligations endure for three (3) years post-termination.
-6. LIMITATION OF LIABILITY. AGGREGATE LIABILITY IS CAPPED AT TOTAL FEES PAID IN THE PRECEDING TWELVE (12) MONTHS.
-7. TERMINATION. Either Party may terminate for material breach with thirty (30) days cure notice.
-8. GOVERNING LAW. Governed by the laws of New York State.`
-  },
-  {
-    id: "doc-3",
-    title: "Master Services Agreement (High-Risk AlphaCorp)",
-    category: "msa",
-    parties: ["AlphaCorp Inc.", "Enterprise Client LLC"],
-    jurisdiction: "Delaware",
-    effective_date: "October 15, 2024",
-    word_count: 245,
-    token_count: 312,
-    risk_level: "High",
-    summary: "Data processing vendor agreement featuring unilateral 15-day termination for convenience and asymmetric indemnification.",
-    text: `MASTER SERVICES AGREEMENT
-This Master Services Agreement establishes the terms under which AlphaCorp Inc. will provide specialized data processing services to the Client.
-1. TERM & TERMINATION. Initial term is 36 months, auto-renewing annually. Provider may terminate this agreement for any reason upon fifteen (15) days prior written notice.
-2. FEES. Monthly invoicing with Net 30 payment terms.
-3. LIMITATION OF LIABILITY. Liability is strictly capped at preceding 12 months fees without carve-outs for data security breaches.
-4. INDEMNIFICATION. Customer shall solely defend, indemnify, and hold harmless Provider from all third-party claims.
-5. GOVERNING LAW. This agreement is governed by the State of Delaware.`
-  }
-]
-
-const INITIAL_DEMO_DATA = {
-  document_name: "Master Services Agreement - AlphaCorp Inc.",
-  stats: {
-    char_count: 1420,
-    word_count: 245,
-    token_count: 312,
-    chunk_count: 1,
-    is_chunked: false
-  },
-  summary: {
-    bottom_line:
-      "High Risk Detected: The agreement grants the counterparty one-sided 15-day termination for convenience and broad customer-only indemnities. Redlines are strongly recommended before signing.",
-    executive_summary:
-      "This Master Services Agreement establishes the terms under which AlphaCorp Inc. will provide specialized data processing services to the Client. The agreement highlights a 36-month initial term with auto-renewal, monthly invoicing with Net 30 terms, and significant unilateral exit rights for the service provider.",
-    key_obligations: [
-      "Maintain 99.9% service level availability for core data processing pipelines.",
-      "Submit quarterly security compliance audits and ISO 27001 certifications.",
-      "Notify counterparty within 48 hours of any potential data security incidents.",
-      "Comply with mutual non-disclosure and strict proprietary trade secret protections."
-    ],
-    critical_hazards: [
-      "Unilateral 15-day termination for convenience favoring AlphaCorp with no penalty.",
-      "Asymmetric indemnification requiring Customer to solely defend and hold harmless Provider.",
-      "Liability cap excludes data privacy and security breach exclusions."
-    ],
-    action_items: [
-      "Negotiate reciprocal termination for convenience window (change 15 days unilateral to 30 days mutual).",
-      "Insert mutual indemnity parity and restrict customer defense obligations to IP infringement.",
-      "Carve out data security and confidentiality breaches from the 12-month aggregate liability ceiling."
-    ]
-  },
-  entities: {
-    parties: ["AlphaCorp Inc.", "Enterprise Client LLC"],
-    effective_date: "October 15, 2024",
-    governing_jurisdiction: "State of Delaware",
-    monetary_caps: ["12 months preceding fees"],
-    notice_periods: ["90 days prior written notice", "15 days for convenience"]
-  },
-  clauses: [
-    {
-      clause_id: 0,
-      clause_type: "indemnification",
-      title: "Indemnification & Defense",
-      risk_level: "High",
-      risk_rationale: "Customer is forced to solely defend and indemnify Provider from all claims with no reciprocal defense obligations.",
-      plain_english_meaning: "You must pay for and manage all lawsuits and legal defense costs filed against the other party, while they have zero duty to protect you.",
-      negotiation_tip: "Require mutual indemnity parity and restrict indemnification strictly to direct damages arising from gross negligence or third-party IP infringement.",
-      text: "Customer shall solely defend, indemnify, and hold harmless Provider from all third-party claims."
-    },
-    {
-      clause_id: 1,
-      clause_type: "limitation_of_liability",
-      title: "Limitation of Liability",
-      risk_level: "Medium",
-      risk_rationale: "Liability is capped at preceding 12 months fees without express carve-outs for data security breaches or confidentiality disclosures.",
-      plain_english_meaning: "The maximum amount either party can recover in a lawsuit is restricted to the total fees paid over the previous year.",
-      negotiation_tip: "Insist on uncapped liability carve-outs or a super-cap (e.g., 3x annual fees) for data privacy breaches and confidentiality violations.",
-      text: "Liability is strictly capped at preceding 12 months fees without carve-outs for data security breaches."
-    },
-    {
-      clause_id: 2,
-      clause_type: "termination",
-      title: "Termination for Convenience",
-      risk_level: "High",
-      risk_rationale: "One-sided termination right favoring AlphaCorp with only 15 days notice. Highly non-standard for enterprise engagements.",
-      plain_english_meaning: "Provider can exit the contract at any time for any reason with merely 15 days notice, leaving Customer vulnerable.",
-      negotiation_tip: "Require a minimum 30-day notice period for termination for convenience and a 30-day cure window for alleged material breaches.",
-      text: "Provider may terminate this agreement for any reason upon fifteen (15) days prior written notice."
-    }
-  ],
-  risk_analysis: {
-    overall_risk: "High",
-    risk_score: 82,
-    verdict: "High Legal Exposure (82/100): Critical red flags identified in high-liability clauses. Immediate redlining recommended.",
-    high_risk_count: 2,
-    medium_risk_count: 1,
-    low_risk_count: 0,
-    critical_flags: [
-      "Unilateral 15-day termination for convenience favoring Provider.",
-      "Customer solely required to indemnify Provider without reciprocal protections.",
-      "12-month liability cap does not explicitly carve out data privacy breach indemnities."
-    ]
-  }
-}
+import ExportReportModal from "./components/ExportReportModal.jsx"
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("dashboard")
-  const [dashboardSubView, setDashboardSubView] = useState("hub")
   const [telemetry, setTelemetry] = useState(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
-  const [analysisResult, setAnalysisResult] = useState(INITIAL_DEMO_DATA)
-  const [documentsList, setDocumentsList] = useState(INITIAL_DOCUMENTS)
+  const [analysisResult, setAnalysisResult] = useState(null)
+  const [documentsList, setDocumentsList] = useState([])
   const [error, setError] = useState(null)
   const [activeClauseForModal, setActiveClauseForModal] = useState(null)
+  const [reportModalOpen, setReportModalOpen] = useState(false)
   const [theme, setTheme] = useState("light")
 
   const toggleTheme = () => {
@@ -221,7 +71,7 @@ export default function App() {
       }
       const data = await res.json()
       setAnalysisResult(data)
-      setDashboardSubView("report")
+      setActiveTab("dashboard")
 
       setDocumentsList((prev) => {
         const exists = prev.some((d) => d.title === docTitle)
@@ -229,17 +79,19 @@ export default function App() {
         const newDoc = {
           id: `doc-${Date.now()}`,
           title: docTitle,
-          category: docTitle.toLowerCase().includes("nda")
+          category: data.entities?.document_type === "court_judgment"
+            ? "Court Judgment"
+            : docTitle.toLowerCase().includes("nda")
             ? "nda"
             : docTitle.toLowerCase().includes("saas")
             ? "saas"
-            : "uploaded",
+            : "Commercial Contract",
           parties: data.entities?.parties || ["Extracted Parties"],
-          jurisdiction: data.entities?.governing_jurisdiction || "Standard",
+          jurisdiction: data.entities?.governing_jurisdiction || data.entities?.court_forum || "Standard",
           word_count: data.stats?.word_count || 300,
           token_count: data.stats?.token_count || 380,
           risk_level: data.risk_analysis?.overall_risk || "Medium",
-          summary: data.summary?.executive_summary || "Parsed contract analysis.",
+          summary: data.summary?.executive_summary || "Parsed legal document analysis.",
           text: data.raw_text || text || ""
         }
         return [newDoc, ...prev]
@@ -256,33 +108,28 @@ export default function App() {
   const handleSelectAndAnalyzeFromRepo = (doc) => {
     handleAnalyze({ text: doc.text, documentName: doc.title })
     setActiveTab("dashboard")
-    setDashboardSubView("report")
   }
 
   const handleUploadNewDocument = (file) => {
     handleAnalyze({ file, documentName: file.name })
     setActiveTab("dashboard")
-    setDashboardSubView("report")
   }
 
-  const handleExportPDF = () => {
-    window.print()
-  }
+  const docType = analysisResult?.entities?.document_type || "commercial_contract"
+  const isJudgment = docType === "court_judgment"
 
   return (
     <div className="min-h-screen bg-background text-on-surface flex selection:bg-secondary-fixed selection:text-on-secondary-fixed-variant transition-colors font-sans">
       <Sidebar
         activeTab={activeTab}
-        setActiveTab={(tab) => {
-          setActiveTab(tab)
-        }}
+        setActiveTab={(tab) => setActiveTab(tab)}
         telemetry={telemetry}
       />
 
       <div className="flex-1 flex flex-col md:ml-64 min-h-screen">
         <Header
           activeTab={activeTab}
-          documentName={analysisResult?.document_name}
+          documentName={analysisResult?.document_name || "Workspace"}
           theme={theme}
           toggleTheme={toggleTheme}
         />
@@ -290,111 +137,178 @@ export default function App() {
         <main className="flex-1 px-4 sm:px-8 pt-8 pb-16 max-w-7xl w-full mx-auto space-y-8">
           {/* Dashboard Tab */}
           {activeTab === "dashboard" && (
-            <div className="space-y-6">
-              {/* Sub-navigation pill toggle: Hub Overview vs Analysis Report */}
-              <div className="flex items-center justify-between pb-2 border-b border-outline-variant/50">
-                <div className="flex items-center gap-2 font-mono text-xs">
-                  <button
-                    onClick={() => setDashboardSubView("hub")}
-                    className={`px-4 py-1.5 rounded-full font-semibold transition-all flex items-center gap-1.5 ${
-                      dashboardSubView === "hub"
-                        ? "bg-primary text-on-primary shadow-xs"
-                        : "bg-surface-container hover:bg-surface-container-high text-on-surface border border-outline-variant"
-                    }`}
-                  >
-                    <span className="material-symbols-outlined text-[16px]">hub</span>
-                    <span>Document Hub</span>
-                  </button>
-                  <button
-                    onClick={() => setDashboardSubView("report")}
-                    className={`px-4 py-1.5 rounded-full font-semibold transition-all flex items-center gap-1.5 ${
-                      dashboardSubView === "report"
-                        ? "bg-primary text-on-primary shadow-xs"
-                        : "bg-surface-container hover:bg-surface-container-high text-on-surface border border-outline-variant"
-                    }`}
-                  >
-                    <span className="material-symbols-outlined text-[16px]">analytics</span>
-                    <span>Contract Report</span>
-                  </button>
+            <div className="space-y-8 animate-in fade-in duration-200">
+              {/* Top Document Header Bar */}
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-outline-variant/50 pb-5">
+                <div>
+                  <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                    <span className="inline-block w-2 h-2 rounded-full bg-secondary"></span>
+                    <span className="text-xs uppercase tracking-wider font-semibold text-secondary font-mono">
+                      {analysisResult
+                        ? isJudgment
+                          ? "Judicial Precedent & Statutory Analysis"
+                          : "Contract Intelligence & Risk Audit"
+                        : "Legal Document Workspace"}
+                    </span>
+                    {analysisResult && (
+                      <span className="px-2.5 py-0.5 rounded-full bg-surface-container-high text-[11px] font-mono text-primary font-bold border border-outline-variant">
+                        {isJudgment ? "Court Judgment" : "Commercial Contract"}
+                      </span>
+                    )}
+                  </div>
+                  <h2 className="font-headline text-3xl sm:text-4xl font-bold text-primary tracking-tight">
+                    {analysisResult?.document_name || "Document Analyzer & Simplifier"}
+                  </h2>
+                  <p className="font-body text-sm text-on-surface-variant mt-1">
+                    {analysisResult
+                      ? isJudgment
+                        ? "Automated ratio decidendi extraction, precedent evaluation, and judicial orders."
+                        : "Automated clause extraction, liability cap auditing, and plain-English simplification."
+                      : "Upload or input commercial contracts, court judgments, or legal notices for automated deep analysis."}
+                  </p>
                 </div>
 
-                {dashboardSubView === "report" && (
-                  <span className="text-xs font-mono text-secondary truncate max-w-xs">
-                    Viewing: {analysisResult?.document_name}
-                  </span>
+                {analysisResult && (
+                  <div className="flex items-center gap-3 shrink-0 font-mono text-xs flex-wrap">
+                    <button
+                      onClick={() => setReportModalOpen(true)}
+                      className="bg-secondary-fixed text-on-secondary-fixed-variant font-mono text-xs px-5 py-2.5 rounded-full hover:bg-secondary-fixed-dim transition-all flex items-center gap-2 shadow-xs font-semibold"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">download</span>
+                      Export Report
+                    </button>
+                    <button
+                      onClick={() => {
+                        const element = document.getElementById("parse-contract-card")
+                        element?.scrollIntoView({ behavior: "smooth" })
+                      }}
+                      className="bg-primary text-on-primary font-mono text-xs px-5 py-2.5 rounded-full hover:opacity-90 transition-all flex items-center gap-2 shadow-xs font-semibold"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">upload_file</span>
+                      Analyze New Document
+                    </button>
+                  </div>
                 )}
               </div>
 
-              {dashboardSubView === "hub" ? (
-                <DashboardHub
-                  onAnalyze={handleAnalyze}
-                  isAnalyzing={isAnalyzing}
-                  documentsList={documentsList}
-                  onNavigateToTab={setActiveTab}
-                  onSelectAndAnalyze={handleSelectAndAnalyzeFromRepo}
-                />
+              {/* Quick Document Switcher Strip - Only rendered when documents exist */}
+              {documentsList.length > 0 && (
+                <div className="p-3.5 rounded-2xl bg-surface-container-low border border-outline-variant/60 flex items-center justify-between gap-4 flex-wrap">
+                  <div className="flex items-center gap-2 text-xs font-mono text-on-surface-variant">
+                    <span className="material-symbols-outlined text-[18px] text-secondary">folder_open</span>
+                    <span className="font-semibold text-primary">Workspace Documents ({documentsList.length}):</span>
+                  </div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {documentsList.slice(0, 5).map((doc) => (
+                      <button
+                        key={doc.id}
+                        onClick={() => handleSelectAndAnalyzeFromRepo(doc)}
+                        className={`px-3 py-1 rounded-xl text-xs font-mono transition-all truncate max-w-[220px] ${
+                          doc.title === analysisResult?.document_name
+                            ? "bg-primary text-on-primary font-bold shadow-xs"
+                            : "bg-surface-container hover:bg-surface-container-high text-on-surface border border-outline-variant/60"
+                        }`}
+                        title={doc.title}
+                      >
+                        {doc.title}
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => setActiveTab("documents")}
+                      className="text-xs font-mono text-secondary hover:text-primary font-bold ml-1"
+                    >
+                      View All →
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {error && (
+                <div className="bg-[#FFEBEE] border border-[#FFCDD2] rounded-2xl p-4 text-xs font-mono text-[#C62828] flex items-center gap-2 shadow-xs">
+                  <span className="material-symbols-outlined text-[18px]">error</span>
+                  <span><strong>Analysis Notice:</strong> {error}</span>
+                </div>
+              )}
+
+              {/* Main Analysis Bento Layout or Empty State */}
+              {analysisResult ? (
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-bento-gap">
+                  {/* Executive Summary (8 cols) */}
+                  <ExecutiveSummary summary={analysisResult.summary} />
+
+                  {/* Case / Contract Key Entities (4 cols) */}
+                  <KeyEntities entities={analysisResult.entities} />
+
+                  {/* Clause Explorer & Breakdown (8 cols) */}
+                  <ClauseExplorer
+                    clauses={analysisResult.clauses}
+                    onSelectClauseForSplitView={setActiveClauseForModal}
+                  />
+
+                  {/* Upload / Parse Card (4 cols) */}
+                  <div id="parse-contract-card" className="md:col-span-4 flex">
+                    <FileUpload onAnalyze={handleAnalyze} isAnalyzing={isAnalyzing} />
+                  </div>
+
+                  {/* Risk Scorecard & Exposure Meter (12 cols) */}
+                  <RiskScorecard
+                    riskAnalysis={analysisResult.risk_analysis}
+                    stats={analysisResult.stats}
+                  />
+                </div>
               ) : (
-                <div className="space-y-8 animate-in fade-in duration-200">
-                  {/* Analysis Report Header Bar */}
-                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="inline-block w-2 h-2 rounded-full bg-secondary"></span>
-                        <span className="text-xs uppercase tracking-wider font-semibold text-secondary font-mono">
-                          Document Analysis Report
-                        </span>
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-bento-gap">
+                  <div className="md:col-span-7 flex flex-col justify-between bento-card p-8 bg-surface-container-lowest space-y-6">
+                    <div className="space-y-4">
+                      <div className="w-14 h-14 rounded-2xl bg-secondary-fixed text-on-secondary-fixed-variant flex items-center justify-center shadow-xs">
+                        <span className="material-symbols-outlined text-3xl">account_balance</span>
                       </div>
-                      <h2 className="font-headline text-3xl sm:text-4xl font-bold text-primary tracking-tight">
-                        Contract Overview
-                      </h2>
-                      <p className="font-body text-sm sm:text-base text-on-surface-variant mt-1.5 font-medium">
-                        {analysisResult?.document_name}
+                      <h3 className="font-headline text-2xl font-bold text-primary">
+                        Ready to Analyze Contracts & Legal Precedents
+                      </h3>
+                      <p className="font-body text-sm text-on-surface-variant leading-relaxed">
+                        Input any legal agreement (NDA, MSA, SaaS, Employment) or Indian Court Judgment (Supreme Court, High Court) to automatically extract:
                       </p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 font-mono text-xs text-primary">
+                        <div className="p-3 rounded-xl bg-surface-container-low border border-outline-variant/60 flex items-start gap-2">
+                          <span className="material-symbols-outlined text-secondary text-base">gavel</span>
+                          <div>
+                            <strong>Judicial & Case Entities</strong>
+                            <p className="text-[11px] text-on-surface-variant mt-0.5">Parties, Bench, Forum, Disposal Ruling</p>
+                          </div>
+                        </div>
+                        <div className="p-3 rounded-xl bg-surface-container-low border border-outline-variant/60 flex items-start gap-2">
+                          <span className="material-symbols-outlined text-secondary text-base">security</span>
+                          <div>
+                            <strong>Operative Legal Clauses</strong>
+                            <p className="text-[11px] text-on-surface-variant mt-0.5">Indemnity, Liability, Service Rules, Ratio</p>
+                          </div>
+                        </div>
+                        <div className="p-3 rounded-xl bg-surface-container-low border border-outline-variant/60 flex items-start gap-2">
+                          <span className="material-symbols-outlined text-secondary text-base">analytics</span>
+                          <div>
+                            <strong>Dual Audience Risk Audit</strong>
+                            <p className="text-[11px] text-on-surface-variant mt-0.5">Simplified user tips & in-depth counsel analysis</p>
+                          </div>
+                        </div>
+                        <div className="p-3 rounded-xl bg-surface-container-low border border-outline-variant/60 flex items-start gap-2">
+                          <span className="material-symbols-outlined text-secondary text-base">description</span>
+                          <div>
+                            <strong>Model Dossier Export</strong>
+                            <p className="text-[11px] text-on-surface-variant mt-0.5">Direct PDF and structured Markdown export</p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={handleExportPDF}
-                        className="bg-secondary-fixed text-on-secondary-fixed-variant font-mono text-xs px-5 py-2.5 rounded-full hover:bg-secondary-fixed-dim transition-all flex items-center gap-2 shadow-xs font-semibold"
-                      >
-                        <span className="material-symbols-outlined text-[18px]">download</span>
-                        Export Report
-                      </button>
-                      <button
-                        onClick={() => {
-                          const element = document.getElementById("parse-contract-card")
-                          element?.scrollIntoView({ behavior: "smooth" })
-                        }}
-                        className="bg-primary text-on-primary font-mono text-xs px-5 py-2.5 rounded-full hover:opacity-90 transition-all flex items-center gap-2 shadow-xs font-semibold"
-                      >
-                        <span className="material-symbols-outlined text-[18px]">upload_file</span>
-                        Parse New Contract
-                      </button>
+                    <div className="p-4 rounded-xl bg-surface-container-high/60 border border-outline-variant font-mono text-xs text-on-surface-variant flex items-center gap-2">
+                      <span className="material-symbols-outlined text-secondary text-[18px]">verified</span>
+                      <span>Trained on Supreme Court & Commercial Contract Corpora with 8GB RAM optimization.</span>
                     </div>
                   </div>
 
-                  {error && (
-                    <div className="bg-[#FFEBEE] border border-[#FFCDD2] rounded-2xl p-4 text-xs font-mono text-[#C62828] flex items-center gap-2 shadow-xs">
-                      <span className="material-symbols-outlined text-[18px]">error</span>
-                      <span><strong>Analysis Notice:</strong> {error}</span>
-                    </div>
-                  )}
-
-                  {/* 12-Column Bento Grid Layout */}
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-bento-gap">
-                    <ExecutiveSummary summary={analysisResult?.summary} />
-                    <KeyEntities entities={analysisResult?.entities} />
-                    <ClauseExplorer
-                      clauses={analysisResult?.clauses}
-                      onSelectClauseForSplitView={setActiveClauseForModal}
-                    />
-                    <div id="parse-contract-card" className="md:col-span-4 flex">
-                      <FileUpload onAnalyze={handleAnalyze} isAnalyzing={isAnalyzing} />
-                    </div>
-                    <RiskScorecard
-                      riskAnalysis={analysisResult?.risk_analysis}
-                      stats={analysisResult?.stats}
-                    />
+                  <div className="md:col-span-5 flex">
+                    <FileUpload onAnalyze={handleAnalyze} isAnalyzing={isAnalyzing} />
                   </div>
                 </div>
               )}
@@ -411,12 +325,13 @@ export default function App() {
             />
           )}
 
-          {/* Risk Analysis Tab */}
+          {/* Risk Analysis Tab (Simplified vs. In-Depth) */}
           {activeTab === "risk" && (
             <RiskAnalysisView
               analysisResult={analysisResult}
               onSelectClauseForSplitView={setActiveClauseForModal}
               onNavigateToDocuments={() => setActiveTab("documents")}
+              onOpenReportModal={() => setReportModalOpen(true)}
             />
           )}
 
@@ -424,6 +339,14 @@ export default function App() {
           {activeTab === "settings" && <SettingsView />}
         </main>
       </div>
+
+      {/* Model-Generated Report Modal */}
+      {reportModalOpen && (
+        <ExportReportModal
+          analysisResult={analysisResult}
+          onClose={() => setReportModalOpen(false)}
+        />
+      )}
 
       {/* Side-by-Side Comparison Modal */}
       {activeClauseForModal && (

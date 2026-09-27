@@ -180,23 +180,27 @@ export default function DocumentsView({
         /* Empty State */
         <div className="bento-card p-12 text-center flex flex-col items-center justify-center min-h-[380px]">
           <div className="w-16 h-16 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant flex items-center justify-center mb-4">
-            <span className="material-symbols-outlined text-3xl">folder_zip</span>
+            <span className="material-symbols-outlined text-3xl">folder_open</span>
           </div>
           <h3 className="font-headline text-lg font-bold text-primary mb-1">
-            No Contracts Matched Filter
+            {documentsList.length === 0 ? "Workspace Repository is Empty" : "No Documents Matched Filter"}
           </h3>
           <p className="text-xs font-body text-on-surface-variant max-w-md mb-6 leading-relaxed">
-            No contracts in repository matching "{searchQuery}". Upload a contract or clear the search filter.
+            {documentsList.length === 0
+              ? "No contracts or judicial documents have been uploaded yet. Upload a PDF or TXT document below to populate your workspace."
+              : `No documents found matching "${searchQuery}". Clear the filter to view all documents.`}
           </p>
-          <button
-            onClick={() => {
-              setSearchQuery("")
-              setCategoryFilter("all")
-            }}
-            className="px-5 py-2 rounded-full bg-surface-container text-on-surface font-mono text-xs border border-outline-variant hover:bg-surface-container-high transition-colors"
-          >
-            Clear Filters
-          </button>
+          {documentsList.length > 0 && (
+            <button
+              onClick={() => {
+                setSearchQuery("")
+                setCategoryFilter("all")
+              }}
+              className="px-5 py-2 rounded-full bg-surface-container text-on-surface font-mono text-xs border border-outline-variant hover:bg-surface-container-high transition-colors"
+            >
+              Clear Filters
+            </button>
+          )}
         </div>
       )}
 

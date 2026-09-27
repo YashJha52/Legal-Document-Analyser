@@ -29,6 +29,7 @@ find . -name "*.pyc" -delete 2>/dev/null || true
 echo "Bundling Frontend using ESBuild..."
 cd frontend
 ../package/bin/esbuild src/main.jsx --bundle --outfile=dist/bundle.js
+sed 's|/src/main.jsx|/assets/bundle.js|g' index.html > dist/index.html
 cd ..
 
 echo "Starting Unified FastAPI Server..."

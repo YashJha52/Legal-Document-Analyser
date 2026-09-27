@@ -77,14 +77,14 @@ export default function ExecutiveSummary({ summary }) {
         {/* 2-Column Section: Obligations & Action Items */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
           {/* Key Obligations */}
-          {summary.key_obligations && summary.key_obligations.length > 0 && (
+          {Array.from(new Set(summary.key_obligations || [])).length > 0 && (
             <div className="space-y-2 bg-surface-container-low p-4 rounded-2xl border border-outline-variant/60">
               <h4 className="text-xs font-mono uppercase tracking-wider text-secondary font-semibold flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-[16px] text-secondary">task_alt</span>
                 Key Obligations
               </h4>
               <ul className="space-y-2">
-                {summary.key_obligations.map((item, idx) => (
+                {Array.from(new Set(summary.key_obligations || [])).map((item, idx) => (
                   <li
                     key={idx}
                     className="text-xs text-on-surface flex items-start gap-2 leading-relaxed"
@@ -98,14 +98,14 @@ export default function ExecutiveSummary({ summary }) {
           )}
 
           {/* Action Items & Next Steps */}
-          {summary.action_items && summary.action_items.length > 0 && (
+          {Array.from(new Set(summary.action_items || [])).length > 0 && (
             <div className="space-y-2 bg-surface-container-low p-4 rounded-2xl border border-outline-variant/60">
               <h4 className="text-xs font-mono uppercase tracking-wider text-secondary font-semibold flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-[16px] text-risk-medium">arrow_forward</span>
                 Action Items & Redlines
               </h4>
               <ul className="space-y-2">
-                {summary.action_items.map((action, idx) => (
+                {Array.from(new Set(summary.action_items || [])).map((action, idx) => (
                   <li
                     key={idx}
                     className="text-xs text-on-surface flex items-start gap-2 leading-relaxed"
@@ -120,14 +120,14 @@ export default function ExecutiveSummary({ summary }) {
         </div>
 
         {/* Critical Hazards / Traps */}
-        {summary.critical_hazards && summary.critical_hazards.length > 0 && (
+        {Array.from(new Set(summary.critical_hazards || [])).length > 0 && (
           <div className="mt-4 p-3.5 rounded-2xl bg-[#FFEBEE]/60 border border-[#FFCDD2] text-xs text-[#5c1d1d] space-y-1.5">
             <span className="font-mono text-xs font-bold text-[#C62828] flex items-center gap-1.5 uppercase tracking-wide">
               <span className="material-symbols-outlined text-[16px]">warning</span>
               Key Traps & Exposure Points
             </span>
             <ul className="space-y-1 pl-1">
-              {summary.critical_hazards.map((hazard, idx) => (
+              {Array.from(new Set(summary.critical_hazards || [])).map((hazard, idx) => (
                 <li key={idx} className="flex items-start gap-2 leading-relaxed">
                   <span className="text-[#C62828] font-bold">•</span>
                   <span>{hazard}</span>

@@ -10,7 +10,6 @@ export default function Sidebar({ activeTab, setActiveTab }) {
 
   return (
     <nav className="bg-surface border-r border-outline-variant h-screen w-64 fixed left-0 top-0 hidden md:flex flex-col py-6 z-50 transition-colors">
-      {/* Brand Header */}
       <div className="px-6 mb-8 flex items-center gap-3">
         <div className="w-9 h-9 rounded-xl bg-primary-container text-surface flex items-center justify-center font-serif text-lg font-bold shadow-sm">
           <span className="material-symbols-outlined text-[20px] text-primary-fixed">balance</span>
@@ -21,7 +20,6 @@ export default function Sidebar({ activeTab, setActiveTab }) {
         </div>
       </div>
 
-      {/* Navigation Tabs */}
       <div className="flex-1 overflow-y-auto custom-scrollbar">
         <ul className="space-y-1.5" id="sidebar-nav">
           {navItems.map((item) => {
@@ -50,7 +48,6 @@ export default function Sidebar({ activeTab, setActiveTab }) {
         </ul>
       </div>
 
-      {/* Bottom Workspace Status */}
       <div className="px-6 pt-4 border-t border-outline-variant/60">
         <div className="p-3.5 bg-surface-container-low rounded-xl border border-outline-variant/50">
           <div className="flex items-center justify-between text-xs text-on-surface-variant mb-1.5 font-mono">
@@ -61,8 +58,8 @@ export default function Sidebar({ activeTab, setActiveTab }) {
             </span>
           </div>
           <p className="text-[11px] font-mono text-on-surface-variant leading-relaxed">
-            Model: Obsidian-Legal v4.2<br />
-            Zero data retention active
+            Obsidian-Legal 2000-2010<br />
+            Unified Contract & Judgment Analyzer
           </p>
         </div>
       </div>
