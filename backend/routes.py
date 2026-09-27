@@ -78,7 +78,10 @@ async def parse_document_endpoint(
 ):
     if file:
         file_bytes = await file.read()
-        extracted_text = parse_document(file_content=file_bytes,filename=file.filename)
+        extracted_text = parse_document(
+            file_content=file_bytes,
+            filename=file.filename or "Uploaded_Document"
+        )
     elif raw_text:
         extracted_text = parse_document(file_content=raw_text)
     else:
