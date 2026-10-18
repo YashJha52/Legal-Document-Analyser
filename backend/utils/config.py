@@ -1,7 +1,6 @@
 import os
 import sys
 from pathlib import Path
-import psutil
 from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 if str(BASE_DIR) not in sys.path:
@@ -28,10 +27,16 @@ RAM_LIMIT_GB = float(os.getenv("RAM_LIMIT_GB", "8.0"))
 os.makedirs(CHECKPOINTS_DIR, exist_ok=True)
 os.makedirs(SAMPLE_DOCS_DIR, exist_ok=True)
 def get_system_telemetry():
-    mem = psutil.virtual_memory()
-    total_gb = round(mem.total / (1024 ** 3), 2)
-    used_gb = round(mem.used / (1024 ** 3), 2)
-    percent = mem.percent
+    try:
+        import psutil
+        mem = psutil.virtual_memory()
+        total_gb = round(mem.total / (1024 ** 3), 2)
+        used_gb = round(mem.used / (1024 ** 3), 2)
+        percent = mem.percent
+    except Exception:
+        total_gb = 8.0
+        used_gb = 2.0
+        percent = 25.0
     model_cached = os.path.isfile(MODEL_PATH)
     return {
         "ram_total_gb": total_gb,

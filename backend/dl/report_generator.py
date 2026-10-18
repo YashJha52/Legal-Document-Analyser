@@ -19,6 +19,11 @@ def generate_report(analysis_data, mode="simplified"):
     risk_score = risk_analysis.get("risk_score", 50)
     verdict = risk_analysis.get("verdict", "Review terms before execution.")
     critical_flags = risk_analysis.get("critical_flags", [])
+    case_topic = analysis_data.get("case_topic") or risk_analysis.get("case_topic", {})
+    
+    doc_type = entities.get("document_type", "commercial_contract")
+    doc_type_label = entities.get("document_type_label", "Commercial Contract / Agreement")
+    doc_type_rationale = entities.get("document_type_rationale", "")
     
     if mode == "simplified":
         return generate_simplified_report(
@@ -32,7 +37,11 @@ def generate_report(analysis_data, mode="simplified"):
             critical_flags=critical_flags,
             summary=summary,
             clauses=clauses,
-            stats=stats
+            stats=stats,
+            doc_type=doc_type,
+            doc_type_label=doc_type_label,
+            doc_type_rationale=doc_type_rationale,
+            case_topic=case_topic
         )
     else:
         return generate_in_depth_report(
@@ -47,10 +56,16 @@ def generate_report(analysis_data, mode="simplified"):
             critical_flags=critical_flags,
             summary=summary,
             clauses=clauses,
-            stats=stats
+            stats=stats,
+            doc_type=doc_type,
+            doc_type_label=doc_type_label,
+            doc_type_rationale=doc_type_rationale,
+            case_topic=case_topic
         )
 
-def generate_simplified_report(doc_name, parties_str, jurisdiction, effective_date, overall_risk, risk_score, verdict, critical_flags, summary, clauses, stats):
+def generate_simplified_report(doc_name, parties_str, jurisdiction, effective_date, overall_risk, risk_score, verdict, critical_flags, summary, clauses, stats, doc_type="commercial_contract", doc_type_label="Commercial Contract", doc_type_rationale="", case_topic=None):
+    if case_topic is None:
+        case_topic = {}
     high_risks = [c for c in clauses if c.get("risk_level") == "High"]
     med_risks = [c for c in clauses if c.get("risk_level") == "Medium"]
     low_risks = [c for c in clauses if c.get("risk_level") == "Low"]
@@ -68,9 +83,24 @@ def generate_simplified_report(doc_name, parties_str, jurisdiction, effective_da
         "Verify liability caps protect you from unexpected claims."
     ])
     
+    type_headers = {
+        "fir": "# 🚨 SIMPLIFIED FIRST INFORMATION REPORT (FIR) AUDIT & RISK GUIDE",
+        "supreme_court_judgment": "# ⚖️ SIMPLIFIED SUPREME COURT JUDGMENT & PRECEDENT GUIDE",
+        "court_summons": "# 🏛️ SIMPLIFIED COURT SUMMONS & APPEARANCE COMPLIANCE GUIDE",
+        "subpoena": "# 📜 SIMPLIFIED SUBPOENA & DISCOVERY COMPLIANCE GUIDE",
+        "court_judgment": "# ⚖️ SIMPLIFIED COURT JUDGMENT & PRECEDENT GUIDE",
+        "legal_notice": "# ✉️ SIMPLIFIED LEGAL NOTICE & RESPONSE GUIDE",
+        "case_file": "# 📁 SIMPLIFIED CASE FILE & PLEADINGS GUIDE",
+        "commercial_contract": "# 📋 SIMPLIFIED CONTRACT SUMMARY & RISK GUIDE"
+    }
+    header_title = type_headers.get(doc_type, f"# 📋 SIMPLIFIED {doc_type_label.upper()} SUMMARY & RISK GUIDE")
+    
     markdown_lines = []
-    markdown_lines.append(f"# 📋 SIMPLIFIED CONTRACT SUMMARY & RISK GUIDE")
+    markdown_lines.append(header_title)
     markdown_lines.append(f"**Document Name:** {doc_name}  ")
+    markdown_lines.append(f"**Document Classification:** `{doc_type_label}`  ")
+    if doc_type_rationale:
+        markdown_lines.append(f"**Classification Basis:** *{doc_type_rationale}*  ")
     markdown_lines.append(f"**Parties Involved:** {parties_str}  ")
     markdown_lines.append(f"**Date:** {effective_date}  ")
     markdown_lines.append(f"**Governing Jurisdiction:** {jurisdiction}  ")
@@ -81,6 +111,13 @@ def generate_simplified_report(doc_name, parties_str, jurisdiction, effective_da
     markdown_lines.append("## ⚡ The Bottom Line (Quick Takeaway)")
     markdown_lines.append(f"> **{bottom_line}**")
     markdown_lines.append("")
+    if case_topic.get("what_its_about"):
+        markdown_lines.append(f"## 🎯 Main Topic: {case_topic.get('topic_title', 'Case & Document Subject')}")
+        markdown_lines.append(f"- **What this is about:** {case_topic.get('what_its_about')}")
+        markdown_lines.append(f"- **Why this occurred:** {case_topic.get('why_it_occurred')}")
+        verdict_label = "Supreme Court Verdict / Decree" if "judgment" in doc_type else "Current Standing & Directives"
+        markdown_lines.append(f"- **{verdict_label}:** {case_topic.get('demanded_items_or_verdict')}")
+        markdown_lines.append("")
     markdown_lines.append("## 📖 What is this document about in Plain English?")
     markdown_lines.append(exec_summary)
     markdown_lines.append("")
@@ -142,7 +179,9 @@ def generate_simplified_report(doc_name, parties_str, jurisdiction, effective_da
         ]
     }
 
-def generate_in_depth_report(doc_name, entities, parties_str, jurisdiction, effective_date, overall_risk, risk_score, verdict, critical_flags, summary, clauses, stats):
+def generate_in_depth_report(doc_name, entities, parties_str, jurisdiction, effective_date, overall_risk, risk_score, verdict, critical_flags, summary, clauses, stats, doc_type="commercial_contract", doc_type_label="Commercial Contract", doc_type_rationale="", case_topic=None):
+    if case_topic is None:
+        case_topic = {}
     high_risks = [c for c in clauses if c.get("risk_level") == "High"]
     med_risks = [c for c in clauses if c.get("risk_level") == "Medium"]
     low_risks = [c for c in clauses if c.get("risk_level") == "Low"]
@@ -163,6 +202,9 @@ def generate_in_depth_report(doc_name, entities, parties_str, jurisdiction, effe
     markdown_lines.append(f"**FROM:** Lexis Obsidian Deep Learning Legal Auditor (Trained on 2000-2010 Supreme Court Corpus)  ")
     markdown_lines.append(f"**DATE OF AUDIT:** {datetime.now().strftime('%B %d, %Y')}  ")
     markdown_lines.append(f"**TARGET INSTRUMENT:** `{doc_name}`  ")
+    markdown_lines.append(f"**INSTRUMENT CLASSIFICATION:** `{doc_type_label}`  ")
+    if doc_type_rationale:
+        markdown_lines.append(f"**CLASSIFICATION RATIONALE:** *{doc_type_rationale}*  ")
     markdown_lines.append(f"**PRIMARY PARTIES:** {parties_str}  ")
     markdown_lines.append(f"**GOVERNING JURISDICTION & VENUE:** {jurisdiction}  ")
     markdown_lines.append(f"**COMPLIANCE POSTURE:** {overall_risk.upper()} EXPOSURE ({risk_score}/100)  ")
@@ -176,7 +218,14 @@ def generate_in_depth_report(doc_name, entities, parties_str, jurisdiction, effe
     markdown_lines.append("")
     markdown_lines.append("---")
     markdown_lines.append("")
-    markdown_lines.append("## 1. EXECUTIVE LEGAL SUMMARY & AUDIT ABSTRACT")
+    markdown_lines.append("## 1. SUBSTANTIVE SUBJECT MATTER & DISPUTE GENESIS")
+    if case_topic.get("what_its_about"):
+        markdown_lines.append(f"- **Primary Legal Issue / Topic:** {case_topic.get('what_its_about')}")
+        markdown_lines.append(f"- **Dispute Genesis (Why Action Occurred):** {case_topic.get('why_it_occurred')}")
+        order_title = "Supreme Court Verdict / Operative Decree" if "judgment" in doc_type else "Enforceable Directive / Production Order"
+        markdown_lines.append(f"- **{order_title}:** {case_topic.get('demanded_items_or_verdict')}")
+        markdown_lines.append("")
+    markdown_lines.append("## 2. EXECUTIVE LEGAL SUMMARY & AUDIT ABSTRACT")
     markdown_lines.append(f"**Overall Legal Verdict:** {verdict}")
     markdown_lines.append("")
     markdown_lines.append(summary.get("executive_summary", "Detailed legal examination indicates multi-faceted contractual commitments and liabilities."))

@@ -12,15 +12,26 @@ export default function DocumentsView({
 
   const categories = [
     { id: "all", label: "All Documents" },
+    { id: "fir", label: "FIR" },
+    { id: "supreme_court_judgment", label: "Supreme Court" },
+    { id: "court_summons", label: "Summons" },
+    { id: "subpoena", label: "Subpoena" },
+    { id: "court_judgment", label: "Judgments" },
+    { id: "legal_notice", label: "Legal Notices" },
     { id: "nda", label: "NDAs" },
-    { id: "msa", label: "Agreements (MSA)" },
-    { id: "saas", label: "SaaS Contracts" },
-    { id: "uploaded", label: "User Uploaded" }
+    { id: "saas", label: "SaaS Contracts" }
   ]
 
   const filteredDocs = documentsList.filter((doc) => {
+    const docCat = (doc.category || "").toLowerCase()
+    const filterCat = categoryFilter.toLowerCase()
     const matchesCategory =
-      categoryFilter === "all" || doc.category?.toLowerCase() === categoryFilter.toLowerCase()
+      categoryFilter === "all" ||
+      docCat === filterCat ||
+      docCat.replace(/\s+/g, "_") === filterCat ||
+      (filterCat === "supreme_court_judgment" && docCat.includes("supreme")) ||
+      (filterCat === "court_summons" && docCat.includes("summons")) ||
+      (filterCat === "court_judgment" && docCat.includes("judgment"))
     const matchesSearch =
       !searchQuery ||
       doc.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||

@@ -59,10 +59,11 @@ def extract_clauses_and_entities_llm(text, max_tokens=1800):
     if llama_model is None:
         return extract_clauses_and_entities_heuristic(text)
     prompt = f"""<|im_start|>system
-You are an expert legal AI assistant. Analyze the provided legal contract and output STRICT JSON only without Markdown formatting or explanations.
+You are an expert legal AI assistant. Analyze the provided legal text and output STRICT JSON only without Markdown formatting or explanations. Classify `document_type` as one of: `supreme_court_judgment`, `court_judgment`, `fir`, `court_summons`, `subpoena`, `legal_notice`, `case_file`, or `commercial_contract`.
 JSON format:
 {{
   "entities": {{
+    "document_type": "commercial_contract",
     "parties": ["Acme Corp", "Beta LLC"],
     "effective_date": "January 1, 2024",
     "governing_jurisdiction": "Delaware",
@@ -109,6 +110,11 @@ Analyze this legal text:
             cleaned_json = re.sub(r"^```(?:json)?", "", content).rstrip("`").strip()
             data = json.loads(cleaned_json)
             if "entities" in data and "clauses" in data and "risk_analysis" in data:
+                from backend.nlp.extractor import extract_case_topic_and_verdict
+                doc_type = data["entities"].get("document_type", "commercial_contract")
+                case_topic = extract_case_topic_and_verdict(text, doc_type, data["entities"])
+                data["case_topic"] = case_topic
+                data["risk_analysis"]["case_topic"] = case_topic
                 return data
     except Exception:
         pass

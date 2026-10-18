@@ -1,4 +1,6 @@
 import os
+os.environ["TORCHDYNAMO_DISABLE"] = "1"
+os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
 import json
 import re
 import random
@@ -36,6 +38,10 @@ CLAUSE_CLASSES = [
     "Intellectual Property",
     "Non-Compete",
     "Warranties",
+    "FIR & Criminal Allegations",
+    "Subpoena & Compulsory Discovery",
+    "Court Summons & Appearance",
+    "Trial Judgment & Acquittal Ruling",
     "General Legal Context"
 ]
 
@@ -47,7 +53,11 @@ ALL_KEYWORDS_REGEX = re.compile(
     r"indemnify|indemnification|hold harmless|defend and indemnify|indemnity|guarantee|"
     r"intellectual property|copyright|patent|trademark|infringement|passing off|"
     r"non-compete|non-competition|solicit|restrictive covenant|garden leave|restraint of trade|section 27|"
-    r"warrant|warranty|warranties|merchantability|fitness for a particular purpose|condition precedent)\b",
+    r"warrant|warranty|warranties|merchantability|fitness for a particular purpose|condition precedent|"
+    r"first information report|police station|cognizable offence|chargesheet|ndps act|section 154|"
+    r"subpoena|subpoena duces tecum|commanded to produce|records custodian|rule 45|contempt of court|"
+    r"summons to defendant|order v rule|commanded to appear|attend this court|ex-parte|"
+    r"accordingly acquitted|acquitted from the charges|benefit of doubt|section 50|section 52-a)\b",
     re.IGNORECASE
 )
 
@@ -87,7 +97,7 @@ def run_training():
     
     with open(corpus_path, "r", encoding="utf-8") as f:
         corpus = json.load(f)
-    print(f"Loaded Indian Law Corpus (2000-2010) with {len(corpus)} samples across 9 classes.")
+    print(f"Loaded Indian Legal Corpus with {len(corpus)} samples across {len(CLAUSE_CLASSES)} classes.", flush=True)
 
     texts = [item[0] for item in corpus]
     labels = [item[1] for item in corpus]
@@ -123,13 +133,13 @@ def run_training():
 
     model = LegalClauseClassifier(input_dim=1200, hidden_dim=256, num_classes=len(CLAUSE_CLASSES))
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.AdamW(model.parameters(), lr=0.003, weight_decay=0.008)
+    optimizer = optim.Adam(model.parameters(), lr=0.003, weight_decay=0.0001)
     scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=16, eta_min=0.0002)
 
     epochs = 16
     best_val_acc = 0.0
     history = {
-        "dataset_name": "Supreme Court of India Judgments (2000-2010)",
+        "dataset_name": "Indian Legal Corpus (2000-2010 SC + NDPS Trial, FIR & Subpoena Documents)",
         "training_years": "2000-2010",
         "total_samples": len(corpus),
         "train_samples": len(train_texts),
@@ -145,10 +155,10 @@ def run_training():
         "val_f1": []
     }
 
-    print(f"Training samples: {len(train_texts)} | Validation samples: {len(val_texts)}")
-    print(f"Epochs: {epochs} | Batch size: 32 | Target Classes: {len(CLAUSE_CLASSES)}\n")
-    print(f"{'Epoch':<7} | {'Train Loss':<11} | {'Train Acc':<10} | {'Val Loss':<10} | {'Val Acc':<9} | {'Val F1':<8}")
-    print("-" * 65)
+    print(f"Training samples: {len(train_texts)} | Validation samples: {len(val_texts)}", flush=True)
+    print(f"Epochs: {epochs} | Batch size: 32 | Target Classes: {len(CLAUSE_CLASSES)}\n", flush=True)
+    print(f"{'Epoch':<7} | {'Train Loss':<11} | {'Train Acc':<10} | {'Val Loss':<10} | {'Val Acc':<9} | {'Val F1':<8}", flush=True)
+    print("-" * 65, flush=True)
 
     best_val_preds = []
     best_val_targets = []
@@ -222,7 +232,7 @@ def run_training():
                 "num_classes": len(CLAUSE_CLASSES)
             }, MODEL_SAVE_PATH)
 
-        print(f"{epoch:<7} | {epoch_train_loss:<11.4f} | {epoch_train_acc:<10.2%} | {epoch_val_loss:<10.4f} | {epoch_val_acc:<9.2%} | {f1:<8.4f}")
+        print(f"{epoch:<7} | {epoch_train_loss:<11.4f} | {epoch_train_acc:<10.2%} | {epoch_val_loss:<10.4f} | {epoch_val_acc:<9.2%} | {f1:<8.4f}", flush=True)
 
     history["classes"] = CLAUSE_CLASSES
     history["final_val_predictions"] = [int(p) for p in best_val_preds]
@@ -243,13 +253,13 @@ def run_training():
     with open(METRICS_JSON_PATH, "w", encoding="utf-8") as f:
         json.dump(history, f, indent=2)
 
-    print("-" * 65)
-    print(f"Realistic Training Complete. Peak Validation Accuracy: {best_val_acc:.2%}")
-    print(f"Final Validation Accuracy: {history['val_acc'][-1]:.2%}")
-    print(f"Final Validation F1-Score: {history['val_f1'][-1]:.4f}")
-    print(f"Model Checkpoint saved to: {MODEL_SAVE_PATH}")
-    print(f"Vectorizer saved to: {VECTORIZER_SAVE_PATH}")
-    print(f"Metrics Record saved to: {METRICS_JSON_PATH}")
+    print("-" * 65, flush=True)
+    print(f"Realistic Training Complete. Peak Validation Accuracy: {best_val_acc:.2%}", flush=True)
+    print(f"Final Validation Accuracy: {history['val_acc'][-1]:.2%}", flush=True)
+    print(f"Final Validation F1-Score: {history['val_f1'][-1]:.4f}", flush=True)
+    print(f"Model Checkpoint saved to: {MODEL_SAVE_PATH}", flush=True)
+    print(f"Vectorizer saved to: {VECTORIZER_SAVE_PATH}", flush=True)
+    print(f"Metrics Record saved to: {METRICS_JSON_PATH}", flush=True)
 
 def load_trained_model(model_path=MODEL_SAVE_PATH, vectorizer_path=VECTORIZER_SAVE_PATH):
     if not os.path.exists(model_path):

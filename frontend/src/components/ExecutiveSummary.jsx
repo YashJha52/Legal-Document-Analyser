@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 
-export default function ExecutiveSummary({ summary }) {
+export default function ExecutiveSummary({ summary, caseTopic, docType, className = "" }) {
   const [copied, setCopied] = useState(false)
 
   if (!summary) return null
@@ -8,6 +8,7 @@ export default function ExecutiveSummary({ summary }) {
   const handleCopy = () => {
     const fullText = [
       summary.bottom_line ? `THE BOTTOM LINE:\n${summary.bottom_line}\n` : "",
+      caseTopic?.what_its_about ? `CORE TOPIC:\n${caseTopic.what_its_about}\nWHY THIS OCCURRED:\n${caseTopic.why_it_occurred || ""}\n` : "",
       `EXECUTIVE SUMMARY:\n${summary.executive_summary || ""}\n`,
       summary.key_obligations?.length ? `KEY OBLIGATIONS:\n- ${summary.key_obligations.join("\n- ")}\n` : "",
       summary.critical_hazards?.length ? `CRITICAL HAZARDS:\n- ${summary.critical_hazards.join("\n- ")}\n` : "",
@@ -22,7 +23,7 @@ export default function ExecutiveSummary({ summary }) {
   const currentDateText = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
 
   return (
-    <div className="bento-card md:col-span-8 flex flex-col justify-between space-y-5">
+    <div className={`bento-card flex flex-col justify-between space-y-5 ${className || "md:col-span-8"}`}>
       <div>
         {/* Header with Title and Quick Copy */}
         <div className="flex justify-between items-start mb-4 flex-wrap gap-2">
@@ -61,6 +62,38 @@ export default function ExecutiveSummary({ summary }) {
             <p className="font-body text-sm font-medium text-primary leading-relaxed">
               {summary.bottom_line}
             </p>
+          </div>
+        )}
+
+        {/* Core Topic Box */}
+        {caseTopic?.what_its_about && (
+          <div className="mb-4 p-4 rounded-2xl bg-surface-container-low border border-outline-variant/70 text-on-surface space-y-2">
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <div className="flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-secondary">
+                <span className="material-symbols-outlined text-[18px]">
+                  {docType === "fir" ? "local_police" : docType === "subpoena" ? "inventory" : (docType === "supreme_court_judgment" || docType === "court_judgment") ? "balance" : "description"}
+                </span>
+                <span>{caseTopic.topic_title || "Main Topic of Document"}</span>
+              </div>
+              {caseTopic.legal_status && (
+                <span className="px-2.5 py-0.5 rounded-full bg-surface-container-high text-[10px] font-mono font-bold text-primary border border-outline-variant">
+                  {caseTopic.legal_status}
+                </span>
+              )}
+            </div>
+            <p className="font-body text-xs text-primary leading-relaxed">
+              <strong>Subject:</strong> {caseTopic.what_they_are_taking || caseTopic.original_case_topic || caseTopic.what_its_about}
+            </p>
+            {caseTopic.why_it_occurred && (
+              <p className="font-body text-xs text-on-surface-variant leading-relaxed">
+                <strong>Why this occurred:</strong> {caseTopic.why_they_are_taking_it || caseTopic.why_it_occurred}
+              </p>
+            )}
+            {(caseTopic.verdict || caseTopic.demanded_items_or_verdict) && (
+              <p className="font-body text-xs text-primary font-medium leading-relaxed">
+                <strong>{(docType === "supreme_court_judgment" || docType === "court_judgment") ? "Verdict & Decree:" : "Status & Standing:"}</strong> {caseTopic.verdict || caseTopic.demanded_items_or_verdict}
+              </p>
+            )}
           </div>
         )}
 

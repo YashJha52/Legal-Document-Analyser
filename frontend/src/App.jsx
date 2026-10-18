@@ -22,11 +22,80 @@ export default function App() {
   const [activeClauseForModal, setActiveClauseForModal] = useState(null)
   const [reportModalOpen, setReportModalOpen] = useState(false)
   const [theme, setTheme] = useState("light")
+  const [entitiesWidthPercent, setEntitiesWidthPercent] = useState(() => {
+    const saved = localStorage.getItem("lexis_entities_width_percent")
+    return saved ? parseFloat(saved) : 34
+  })
+  const [isDragging, setIsDragging] = useState(false)
+  const [isDesktop, setIsDesktop] = useState(typeof window !== "undefined" ? window.innerWidth >= 768 : true)
+  const topRowRef = React.useRef(null)
 
   const toggleTheme = () => {
     const nextTheme = theme === "light" ? "dark" : "light"
     setTheme(nextTheme)
     document.documentElement.className = nextTheme
+  }
+
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 768)
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
+
+  useEffect(() => {
+    if (!isDragging) return
+
+    const handleMouseMove = (e) => {
+      if (!topRowRef.current) return
+      const rect = topRowRef.current.getBoundingClientRect()
+      const newWidth = ((rect.right - e.clientX) / rect.width) * 100
+      const clamped = Math.min(Math.max(newWidth, 24), 65)
+      setEntitiesWidthPercent(Math.round(clamped))
+    }
+
+    const handleTouchMove = (e) => {
+      if (!topRowRef.current || !e.touches[0]) return
+      const rect = topRowRef.current.getBoundingClientRect()
+      const newWidth = ((rect.right - e.touches[0].clientX) / rect.width) * 100
+      const clamped = Math.min(Math.max(newWidth, 24), 65)
+      setEntitiesWidthPercent(Math.round(clamped))
+    }
+
+    const handleEnd = () => {
+      setIsDragging(false)
+      document.body.style.cursor = ""
+      document.body.style.userSelect = ""
+    }
+
+    document.body.style.cursor = "col-resize"
+    document.body.style.userSelect = "none"
+
+    window.addEventListener("mousemove", handleMouseMove)
+    window.addEventListener("mouseup", handleEnd)
+    window.addEventListener("touchmove", handleTouchMove)
+    window.addEventListener("touchend", handleEnd)
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove)
+      window.removeEventListener("mouseup", handleEnd)
+      window.removeEventListener("touchmove", handleTouchMove)
+      window.removeEventListener("touchend", handleEnd)
+      document.body.style.cursor = ""
+      document.body.style.userSelect = ""
+    }
+  }, [isDragging])
+
+  useEffect(() => {
+    localStorage.setItem("lexis_entities_width_percent", entitiesWidthPercent.toString())
+  }, [entitiesWidthPercent])
+
+  const handleStartDrag = (e) => {
+    e.preventDefault()
+    setIsDragging(true)
+  }
+
+  const handleResetWidth = () => {
+    setEntitiesWidthPercent(34)
   }
 
   const fetchTelemetry = async () => {
@@ -79,8 +148,20 @@ export default function App() {
         const newDoc = {
           id: `doc-${Date.now()}`,
           title: docTitle,
-          category: data.entities?.document_type === "court_judgment"
+          category: data.entities?.document_type === "supreme_court_judgment"
+            ? "Supreme Court Judgment"
+            : data.entities?.document_type === "court_summons"
+            ? "Court Summons"
+            : data.entities?.document_type === "subpoena"
+            ? "Subpoena"
+            : data.entities?.document_type === "fir"
+            ? "FIR"
+            : data.entities?.document_type === "court_judgment"
             ? "Court Judgment"
+            : data.entities?.document_type === "case_file"
+            ? "Case File"
+            : data.entities?.document_type === "legal_notice"
+            ? "Legal Notice"
             : docTitle.toLowerCase().includes("nda")
             ? "nda"
             : docTitle.toLowerCase().includes("saas")
@@ -116,7 +197,13 @@ export default function App() {
   }
 
   const docType = analysisResult?.entities?.document_type || "commercial_contract"
-  const isJudgment = docType === "court_judgment"
+  const isSupremeCourt = docType === "supreme_court_judgment"
+  const isJudgment = docType === "court_judgment" || isSupremeCourt
+  const isSummons = docType === "court_summons"
+  const isSubpoena = docType === "subpoena"
+  const isFir = docType === "fir"
+  const isCaseFile = docType === "case_file"
+  const isLegalNotice = docType === "legal_notice"
 
   return (
     <div className="min-h-screen bg-background text-on-surface flex selection:bg-secondary-fixed selection:text-on-secondary-fixed-variant transition-colors font-sans">
@@ -145,26 +232,54 @@ export default function App() {
                     <span className="inline-block w-2 h-2 rounded-full bg-secondary"></span>
                     <span className="text-xs uppercase tracking-wider font-semibold text-secondary font-mono">
                       {analysisResult
-                        ? isJudgment
+                        ? isSupremeCourt
+                          ? "Apex Judicial Precedent & Constitutional Interpretation"
+                          : isJudgment
                           ? "Judicial Precedent & Statutory Analysis"
+                          : isSummons
+                          ? "Mandatory Court Summons & Appearance Order"
+                          : isSubpoena
+                          ? "Judicial Subpoena & Witness Production"
+                          : isFir
+                          ? "First Information Report Analysis"
+                          : isCaseFile
+                          ? "Case File & Docket Analysis"
+                          : isLegalNotice
+                          ? "Legal Notice & Demand Analysis"
                           : "Contract Intelligence & Risk Audit"
                         : "Legal Document Workspace"}
                     </span>
                     {analysisResult && (
                       <span className="px-2.5 py-0.5 rounded-full bg-surface-container-high text-[11px] font-mono text-primary font-bold border border-outline-variant">
-                        {isJudgment ? "Court Judgment" : "Commercial Contract"}
+                        {analysisResult.entities?.document_type_label || (isSupremeCourt ? "Supreme Court Judgment" : isSummons ? "Court Summons" : isSubpoena ? "Subpoena" : isJudgment ? "Court Judgment" : isFir ? "FIR" : isCaseFile ? "Case File" : isLegalNotice ? "Legal Notice" : "Commercial Contract")}
                       </span>
                     )}
                   </div>
                   <h2 className="font-headline text-3xl sm:text-4xl font-bold text-primary tracking-tight">
                     {analysisResult?.document_name || "Document Analyzer & Simplifier"}
                   </h2>
-                  <p className="font-body text-sm text-on-surface-variant mt-1">
+                  {analysisResult?.entities?.document_type_rationale && (
+                    <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-xs font-mono text-secondary border border-outline-variant/80">
+                      <span className="material-symbols-outlined text-[16px]">verified</span>
+                      <span>{analysisResult.entities.document_type_rationale}</span>
+                    </div>
+                  )}
+                  <p className="font-body text-sm text-on-surface-variant mt-2">
                     {analysisResult
-                      ? isJudgment
+                      ? isSupremeCourt
+                        ? "Automated ratio decidendi extraction, Supreme Court bench analysis, and constitutional rulings."
+                        : isJudgment
                         ? "Automated ratio decidendi extraction, precedent evaluation, and judicial orders."
+                        : isSummons
+                        ? "Automated detection of hearing date, issuing court forum, summoned parties, and mandatory attendance directives."
+                        : isSubpoena
+                        ? "Automated extraction of compliance deadlines, subpoenaed witnesses/custodians, and evidentiary production commands."
+                        : isFir
+                        ? "Automated extraction of complainant, accused, police station jurisdiction, IPC/BNS charges, and incident summary."
+                        : (isCaseFile || isLegalNotice)
+                        ? "Automated extraction of parties, facts, jurisdictions, and legal context."
                         : "Automated clause extraction, liability cap auditing, and plain-English simplification."
-                      : "Upload or input commercial contracts, court judgments, or legal notices for automated deep analysis."}
+                      : "Upload or input commercial contracts, court judgments, FIRs, court summons, or subpoenas for automated deep analysis."}
                   </p>
                 </div>
 
@@ -233,11 +348,65 @@ export default function App() {
               {/* Main Analysis Bento Layout or Empty State */}
               {analysisResult ? (
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-bento-gap">
-                  {/* Executive Summary (8 cols) */}
-                  <ExecutiveSummary summary={analysisResult.summary} />
+                  {/* Resizable Top Row: Executive Summary & Key Entities */}
+                  <div
+                    ref={topRowRef}
+                    className="col-span-1 md:col-span-12 flex flex-col md:flex-row gap-2.5 items-stretch relative"
+                  >
+                    {/* Executive Summary (Left Panel) */}
+                    <div
+                      style={{ width: isDesktop ? `${100 - entitiesWidthPercent}%` : "100%" }}
+                      className="flex flex-col min-w-0"
+                    >
+                      <ExecutiveSummary
+                        summary={analysisResult.summary}
+                        caseTopic={analysisResult.case_topic || analysisResult.risk_analysis?.case_topic}
+                        docType={docType}
+                        className="h-full"
+                      />
+                    </div>
 
-                  {/* Case / Contract Key Entities (4 cols) */}
-                  <KeyEntities entities={analysisResult.entities} />
+                    {/* Draggable Divider Handle */}
+                    <div
+                      onMouseDown={handleStartDrag}
+                      onTouchStart={handleStartDrag}
+                      onDoubleClick={handleResetWidth}
+                      className={`hidden md:flex items-center justify-center cursor-col-resize select-none px-1 group relative z-20 transition-colors ${
+                        isDragging ? "text-secondary" : "text-outline-variant hover:text-secondary"
+                      }`}
+                      title="Drag left/right to resize section • Double-click to reset (34%)"
+                    >
+                      <div
+                        className={`w-1.5 h-full rounded-full transition-all flex items-center justify-center ${
+                          isDragging
+                            ? "bg-secondary ring-4 ring-secondary/20 shadow-md"
+                            : "bg-outline-variant/60 group-hover:bg-secondary group-hover:w-2"
+                        }`}
+                      >
+                        <div className="w-5 h-9 rounded-full bg-surface-container-highest border border-outline-variant shadow-xs flex items-center justify-center -ml-px group-hover:scale-110 transition-transform">
+                          <span className="material-symbols-outlined text-[13px] text-on-surface-variant group-hover:text-secondary">
+                            drag_indicator
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Key Entities (Right Panel) */}
+                    <div
+                      style={{ width: isDesktop ? `${entitiesWidthPercent}%` : "100%" }}
+                      className="flex flex-col min-w-0"
+                    >
+                      <KeyEntities
+                        entities={analysisResult.entities}
+                        className="h-full"
+                        onWidthChange={setEntitiesWidthPercent}
+                        currentWidthPercent={entitiesWidthPercent}
+                        onResetWidth={handleResetWidth}
+                        onDragStart={handleStartDrag}
+                        isDragging={isDragging}
+                      />
+                    </div>
+                  </div>
 
                   {/* Clause Explorer & Breakdown (8 cols) */}
                   <ClauseExplorer
@@ -254,6 +423,7 @@ export default function App() {
                   <RiskScorecard
                     riskAnalysis={analysisResult.risk_analysis}
                     stats={analysisResult.stats}
+                    caseTopic={analysisResult.case_topic || analysisResult.risk_analysis?.case_topic}
                   />
                 </div>
               ) : (

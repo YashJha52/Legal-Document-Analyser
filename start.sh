@@ -21,10 +21,10 @@ fi
 # Clear any lingering process on port 8000
 lsof -ti :8000 | xargs kill -9 2>/dev/null || true
 
-# Clear __pycache__ in case of corrupted .pyc files causing import hangs
-echo "Clearing pycache..."
-find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
-find . -name "*.pyc" -delete 2>/dev/null || true
+# Clear backend __pycache__
+echo "Clearing backend pycache..."
+find backend -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+find backend -name "*.pyc" -delete 2>/dev/null || true
 
 echo "Bundling Frontend using ESBuild..."
 cd frontend
@@ -41,14 +41,24 @@ BACKEND_PID=$!
 
 # Wait for the server to actually be ready
 echo "Waiting for server to start..."
-for i in $(seq 1 30); do
-    if curl -s --max-time 1 http://127.0.0.1:8000/api/health > /dev/null 2>&1 || curl -s --max-time 1 http://127.0.0.1:8000/ > /dev/null 2>&1; then
+SERVER_READY=0
+for i in $(seq 1 60); do
+    if ! kill -0 $BACKEND_PID 2>/dev/null; then
+        echo "Error: Server process exited unexpectedly."
+        exit 1
+    fi
+    if curl -s --max-time 1 http://127.0.0.1:8000/api/v1/health > /dev/null 2>&1 || curl -s --max-time 1 http://127.0.0.1:8000/api/health > /dev/null 2>&1 || curl -s --max-time 1 http://127.0.0.1:8000/ > /dev/null 2>&1; then
         echo "Server is ready!"
+        SERVER_READY=1
         open http://127.0.0.1:8000 2>/dev/null || true
         break
     fi
     sleep 0.5
 done
+
+if [ $SERVER_READY -eq 0 ]; then
+    echo "Warning: Health check timed out after 30s, but backend process ($BACKEND_PID) is still running."
+fi
 
 wait $BACKEND_PID
 

@@ -1,6 +1,6 @@
 import React from "react"
 
-export default function RiskScorecard({ riskAnalysis, stats }) {
+export default function RiskScorecard({ riskAnalysis, stats, caseTopic }) {
   if (!riskAnalysis) return null
 
   const overall = (riskAnalysis.overall_risk || "Low").toLowerCase()
@@ -81,14 +81,26 @@ export default function RiskScorecard({ riskAnalysis, stats }) {
           </div>
         </div>
 
-        {riskAnalysis.verdict && (
-          <div className="w-full md:w-1/3 bg-surface-container-lowest p-3.5 rounded-xl border border-outline-variant/40 text-xs font-body text-on-surface">
-            <span className="font-mono text-[10px] uppercase font-bold text-secondary block mb-1">
-              Automated Verdict
-            </span>
-            <p className="leading-snug">{riskAnalysis.verdict}</p>
-          </div>
-        )}
+        <div className="w-full md:w-1/3 space-y-2">
+          {riskAnalysis.verdict && (
+            <div className="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/40 text-xs font-body text-on-surface">
+              <span className="font-mono text-[10px] uppercase font-bold text-secondary block mb-1">
+                Automated Verdict
+              </span>
+              <p className="leading-snug">{riskAnalysis.verdict}</p>
+            </div>
+          )}
+          {caseTopic?.what_its_about && (
+            <div className="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/40 text-xs font-body text-on-surface">
+              <span className="font-mono text-[10px] uppercase font-bold text-secondary block mb-1">
+                Main Case Topic
+              </span>
+              <p className="leading-snug text-primary font-medium line-clamp-2">
+                {caseTopic.what_they_are_taking || caseTopic.original_case_topic || caseTopic.what_its_about}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* 4-Tile Metric Row */}

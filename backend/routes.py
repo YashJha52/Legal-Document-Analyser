@@ -97,6 +97,10 @@ async def analyze_document_endpoint(
             "low_risk_count": 0,
             "critical_flags": []
         }),
+        "document_type": extraction_data.get("entities", {}).get("document_type", "commercial_contract"),
+        "document_type_label": extraction_data.get("entities", {}).get("document_type_label", "Commercial Contract / Agreement"),
+        "document_type_rationale": extraction_data.get("entities", {}).get("document_type_rationale", "Classified based on contractual terms."),
+        "case_topic": extraction_data.get("case_topic", {}),
         "raw_text": extracted_text
     }
 
@@ -131,7 +135,8 @@ def generate_report_endpoint(payload: GenerateReportPayload):
                 "summary": summary_data,
                 "entities": extraction_data.get("entities", {}),
                 "clauses": extraction_data.get("clauses", []),
-                "risk_analysis": extraction_data.get("risk_analysis", {})
+                "risk_analysis": extraction_data.get("risk_analysis", {}),
+                "document_type": extraction_data.get("entities", {}).get("document_type", "commercial_contract")
             }
         else:
             raise HTTPException(status_code=400, detail="Either analysis_data or text must be provided.")

@@ -105,7 +105,7 @@ export default function FileUpload({ onAnalyze, isAnalyzing }) {
             <textarea
               value={pastedText}
               onChange={(e) => setPastedText(e.target.value)}
-              placeholder="Paste contract clauses, court judgment, or legal notice text here..."
+              placeholder="Paste contract clauses, Supreme Court judgment, FIR, court summons, or subpoena text here..."
               rows={8}
               className="w-full bg-surface-container-low border border-outline-variant rounded-2xl p-3.5 text-xs text-on-surface font-mono focus:outline-none focus:border-primary transition-colors resize-none leading-relaxed"
             />

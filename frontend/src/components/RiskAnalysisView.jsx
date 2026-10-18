@@ -48,6 +48,13 @@ export default function RiskAnalysisView({
   const summary = analysisResult.summary || {}
   const clauses = analysisResult.clauses || []
   const entities = analysisResult.entities || {}
+  const caseTopic = analysisResult.case_topic || riskData.case_topic || {}
+  const docType = entities.document_type || analysisResult.document_type || ""
+  const isFir = docType === "fir"
+  const isSubpoena = docType === "subpoena"
+  const isSupremeCourt = docType === "supreme_court_judgment"
+  const isJudgment = docType === "court_judgment" || isSupremeCourt
+  const isSummons = docType === "court_summons"
 
   const filteredClauses = clauses.filter((c) => {
     if (riskFilter === "all") return true
@@ -190,13 +197,143 @@ export default function RiskAnalysisView({
             </div>
           </div>
 
+          {/* Main Topic & Origin of Dispute / Proceedings Card */}
+          <div className="bento-card p-6 space-y-4 border-2 border-primary/20 bg-surface-container-lowest shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-outline-variant/50 pb-3.5">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant flex items-center justify-center shrink-0 shadow-xs">
+                  <span className="material-symbols-outlined text-2xl">
+                    {isFir ? "local_police" : isSubpoena ? "inventory" : isSupremeCourt ? "account_balance" : isJudgment ? "balance" : isSummons ? "assignment_ind" : "description"}
+                  </span>
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-mono text-xs uppercase tracking-wider font-bold text-secondary">
+                      Core Case Topic & Context
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-full bg-surface-container-high text-[10px] font-mono text-primary font-bold border border-outline-variant">
+                      {isFir ? "FIR Particulars" : isSubpoena ? "Subpoena Mandate" : isSupremeCourt ? "Supreme Court Precedent" : isJudgment ? "Court Judgment" : isSummons ? "Court Summons" : "Contract Scope"}
+                    </span>
+                  </div>
+                  <h3 className="font-headline text-xl sm:text-2xl font-bold text-primary mt-0.5">
+                    {caseTopic.topic_title || (isFir ? "What This FIR is About" : isSubpoena ? "What & Why They Are Taking" : isJudgment ? "Original Case Topic & Verdict" : "Main Topic of Document")}
+                  </h3>
+                </div>
+              </div>
+
+              {caseTopic.legal_status && (
+                <span className="px-3.5 py-1.5 rounded-full bg-secondary-fixed/50 text-on-secondary-fixed-variant text-xs font-mono font-semibold border border-secondary-fixed self-start sm:self-auto">
+                  {caseTopic.legal_status}
+                </span>
+              )}
+            </div>
+
+            {/* 3-Section Grid: What It's About, Why It Occurred, Demanded Action / Verdict */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+              {/* Tile 1: What It's About / What They Are Taking */}
+              <div className="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/60 space-y-2 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-1.5 text-primary font-mono text-xs font-bold uppercase tracking-wider mb-2">
+                    <span className="material-symbols-outlined text-[18px] text-secondary">
+                      {isSubpoena ? "inventory_2" : isFir ? "emergency" : "help_center"}
+                    </span>
+                    <span>
+                      {isSubpoena
+                        ? "1. What They Are Taking"
+                        : isFir
+                        ? "1. What This FIR is About"
+                        : isJudgment
+                        ? "1. Original Case Topic"
+                        : isSummons
+                        ? "1. What the Suit is About"
+                        : "1. Core Subject Matter"}
+                    </span>
+                  </div>
+                  <p className="font-body text-xs text-on-surface leading-relaxed">
+                    {isSubpoena
+                      ? (caseTopic.what_they_are_taking || caseTopic.what_its_about)
+                      : isJudgment
+                      ? (caseTopic.original_case_topic || caseTopic.what_its_about)
+                      : (caseTopic.what_its_about || "Core factual allegations and operative provisions stipulated in the text.")}
+                  </p>
+                </div>
+              </div>
+
+              {/* Tile 2: Why It Occurred / Why They Are Taking It */}
+              <div className="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/60 space-y-2 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-1.5 text-primary font-mono text-xs font-bold uppercase tracking-wider mb-2">
+                    <span className="material-symbols-outlined text-[18px] text-secondary">
+                      {isSubpoena ? "psychology_alt" : "history_edu"}
+                    </span>
+                    <span>
+                      {isSubpoena
+                        ? "2. Why They Are Taking It"
+                        : isFir
+                        ? "2. Why This FIR Occurred"
+                        : isJudgment
+                        ? "2. Why Case Occurred (Dispute)"
+                        : isSummons
+                        ? "2. Why Summons Occurred"
+                        : "2. Operational Purpose"}
+                    </span>
+                  </div>
+                  <p className="font-body text-xs text-on-surface leading-relaxed">
+                    {isSubpoena
+                      ? (caseTopic.why_they_are_taking_it || caseTopic.why_it_occurred)
+                      : (caseTopic.why_it_occurred || "Dispute or commercial negotiations requiring formal legal instrument.")}
+                  </p>
+                </div>
+              </div>
+
+              {/* Tile 3: Final Verdict / Production Directive / Legal Orders */}
+              <div className="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/60 space-y-2 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-1.5 text-primary font-mono text-xs font-bold uppercase tracking-wider mb-2">
+                    <span className="material-symbols-outlined text-[18px] text-secondary">
+                      {isJudgment ? "gavel" : "verified"}
+                    </span>
+                    <span>
+                      {isJudgment
+                        ? "3. Final Supreme Court Verdict"
+                        : isSubpoena
+                        ? "3. Compliance Deadline & Orders"
+                        : isFir
+                        ? "3. Police Investigation Status"
+                        : isSummons
+                        ? "3. Court Date & Ex-Parte Warning"
+                        : "3. Legal Standing"}
+                    </span>
+                  </div>
+                  <p className="font-body text-xs text-on-surface leading-relaxed font-medium">
+                    {isJudgment
+                      ? (caseTopic.verdict || caseTopic.demanded_items_or_verdict)
+                      : (caseTopic.demanded_items_or_verdict || "Governing rules and binding obligations in force.")}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* 2-Column Section: What to Look Out For vs Key Points of the Case */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-bento-gap">
             {/* Column 1: What Should You Look Out For? */}
-            <div className="bento-card p-6 space-y-4 bg-[#FFEBEE]/30 border border-[#FFCDD2]">
-              <div className="flex items-center gap-2 text-[#C62828] font-mono text-xs font-bold uppercase tracking-wider">
-                <span className="material-symbols-outlined text-[20px]">warning</span>
-                <span>What Should You Look Out For? (Traps & Red Flags)</span>
+            <div className={`bento-card p-6 space-y-4 ${
+              riskData.overall_risk?.toLowerCase() === "low"
+                ? "bg-[#E8F5E9]/40 border border-[#C8E6C9]"
+                : "bg-[#FFEBEE]/30 border border-[#FFCDD2]"
+            }`}>
+              <div className={`flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-wider ${
+                riskData.overall_risk?.toLowerCase() === "low" ? "text-[#2E7D32]" : "text-[#C62828]"
+              }`}>
+                <span className="material-symbols-outlined text-[20px]">
+                  {riskData.overall_risk?.toLowerCase() === "low" ? "check_circle" : "warning"}
+                </span>
+                <span>
+                  {riskData.overall_risk?.toLowerCase() === "low"
+                    ? "Risk Exposure Status: Low Risk (Safe / Discharged)"
+                    : "What Should You Look Out For? (Traps & Red Flags)"}
+                </span>
               </div>
 
               <div className="space-y-3 font-sans text-xs">
@@ -210,7 +347,14 @@ export default function RiskAnalysisView({
                     </div>
                   ))
                 ) : (
-                  <p className="text-[#2E7D32] font-semibold">No critical red flags detected.</p>
+                  <div className="p-3.5 rounded-xl bg-[#E8F5E9] border border-[#C8E6C9] text-[#1B5E20] flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[#2E7D32] text-[18px]">verified</span>
+                    <span className="font-semibold">
+                      {riskData.overall_risk?.toLowerCase() === "low"
+                        ? "No high-risk liabilities detected. Proceedings disposed or terms balanced."
+                        : "No critical red flags detected."}
+                    </span>
+                  </div>
                 )}
 
                 {Array.from(new Set(summary.critical_hazards || [])).length > 0 && (
