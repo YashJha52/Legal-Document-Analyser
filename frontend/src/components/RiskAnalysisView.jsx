@@ -7,7 +7,6 @@ export default function RiskAnalysisView({
   onOpenReportModal
 }) {
   const [viewMode, setViewMode] = useState("simplified") // "simplified" | "in_depth"
-  const [activeBenchmark, setActiveBenchmark] = useState("standard")
   const [riskFilter, setRiskFilter] = useState("all")
 
   if (!analysisResult) {
@@ -459,8 +458,8 @@ export default function RiskAnalysisView({
       {viewMode === "in_depth" && (
         <div className="space-y-6 animate-in fade-in duration-150">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-bento-gap">
-            {/* Left Col: Contract Exposure Posture & KPIs (8 cols) */}
-            <div className="bento-card md:col-span-8 space-y-6">
+            {/* Contract Exposure Posture & KPIs (12 cols) */}
+            <div className="bento-card md:col-span-12 space-y-6">
               <div className="flex justify-between items-center flex-wrap gap-4 border-b border-outline-variant/50 pb-4">
                 <div>
                   <h3 className="font-headline text-xl font-bold text-primary flex items-center gap-2">
@@ -582,81 +581,6 @@ export default function RiskAnalysisView({
                     </div>
                   </button>
                 </div>
-              </div>
-            </div>
-
-            {/* Right Col: Institutional Benchmarks & Statutory Context (4 cols) */}
-            <div className="bento-card md:col-span-4 flex flex-col justify-between bg-surface-container-lowest space-y-4">
-              <div>
-                <h3 className="font-headline text-lg font-bold text-primary mb-1">
-                  Preset Institutional Benchmarks
-                </h3>
-                <p className="text-xs font-mono text-on-surface-variant mb-4">
-                  Select institutional compliance baseline for automated scoring:
-                </p>
-
-                <div className="space-y-3 font-mono text-xs">
-                  <div
-                    onClick={() => setActiveBenchmark("standard")}
-                    className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
-                      activeBenchmark === "standard"
-                        ? "border-2 border-primary bg-surface-container-low shadow-sm"
-                        : "border-outline-variant/60 hover:bg-surface-container-low"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="material-symbols-outlined text-primary text-[18px]">verified</span>
-                      <p className="font-semibold text-primary">Standard Commercial Baseline</p>
-                    </div>
-                    <p className="text-[11px] font-body text-on-surface-variant leading-relaxed">
-                      Default commercial standard for technology and services contracts.
-                    </p>
-                  </div>
-
-                  <div
-                    onClick={() => setActiveBenchmark("aba")}
-                    className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
-                      activeBenchmark === "aba"
-                        ? "border-2 border-primary bg-surface-container-low shadow-sm"
-                        : "border-outline-variant/60 hover:bg-surface-container-low"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="material-symbols-outlined text-secondary text-[18px]">shield</span>
-                      <p className="font-semibold text-primary">ABA Tech Standard 2024</p>
-                    </div>
-                    <p className="text-[11px] font-body text-on-surface-variant leading-relaxed">
-                      Enterprise SaaS & Data Services agreements default standard.
-                    </p>
-                  </div>
-
-                  <div
-                    onClick={() => setActiveBenchmark("buyer")}
-                    className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
-                      activeBenchmark === "buyer"
-                        ? "border-2 border-primary bg-surface-container-low shadow-sm"
-                        : "border-outline-variant/60 hover:bg-surface-container-low"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="material-symbols-outlined text-secondary text-[18px]">balance</span>
-                      <p className="font-semibold text-primary">Strict Buyer / Enterprise</p>
-                    </div>
-                    <p className="text-[11px] font-body text-on-surface-variant leading-relaxed">
-                      Maximum IP ownership, strict indemnification, and extended cure periods.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Statutory references callout */}
-              <div className="p-3.5 rounded-2xl bg-surface-container-low border border-outline-variant/60 text-xs font-mono space-y-1.5">
-                <span className="font-bold text-secondary uppercase text-[10px]">Statutory References:</span>
-                <p className="text-on-surface-variant text-[11px] leading-relaxed">
-                  • Sec 27 ICA (Restraint of Trade)<br />
-                  • Sec 73-74 ICA (Liquidated Damages)<br />
-                  • Sec 10(2) Specific Relief Act
-                </p>
               </div>
             </div>
 
