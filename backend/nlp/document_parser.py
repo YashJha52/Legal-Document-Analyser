@@ -18,6 +18,7 @@ def clean_extracted_text(text):
 def extract_text_from_pdf_stream(stream_bytes):
     extracted_pages = []
     try:
+        import pdfplumber
         with pdfplumber.open(io.BytesIO(stream_bytes)) as pdf:
             for page in pdf.pages:
                 page_text = page.extract_text()

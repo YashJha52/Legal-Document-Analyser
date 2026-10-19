@@ -19,12 +19,19 @@ else
 fi
 
 # Clear any lingering process on port 8000
-lsof -ti :8000 | xargs kill -9 2>/dev/null || true
+PORT_PIDS=$(lsof -ti :8000 2>/dev/null || true)
+if [ -n "$PORT_PIDS" ]; then
+    echo "Clearing lingering process on port 8000..."
+    echo "$PORT_PIDS" | xargs kill -9 2>/dev/null || true
+    sleep 0.5
+fi
 
-# Clear backend __pycache__
-echo "Clearing backend pycache..."
-find backend -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
-find backend -name "*.pyc" -delete 2>/dev/null || true
+# Clear pycache only if explicitly passed --clean
+if [ "$1" == "--clean" ]; then
+    echo "Clearing backend pycache..."
+    find backend -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+    find backend -name "*.pyc" -delete 2>/dev/null || true
+fi
 
 echo "Bundling Frontend using ESBuild..."
 cd frontend
@@ -36,29 +43,39 @@ echo "Starting Unified FastAPI Server..."
 echo "The frontend is now served statically from the backend!"
 echo "Server will be available at: http://127.0.0.1:8000"
 echo "============================================================"
-$PYTHON_CMD -m uvicorn backend.app:app --host 0.0.0.0 --port 8000 &
+export PYTHONUNBUFFERED=1
+$PYTHON_CMD -u -m uvicorn backend.app:app --host 0.0.0.0 --port 8000 &
 BACKEND_PID=$!
 
 # Wait for the server to actually be ready
-echo "Waiting for server to start..."
+printf "Waiting for server to start"
 SERVER_READY=0
-for i in $(seq 1 60); do
+for i in $(seq 1 80); do
     if ! kill -0 $BACKEND_PID 2>/dev/null; then
+        echo ""
         echo "Error: Server process exited unexpectedly."
         exit 1
     fi
-    if curl -s --max-time 1 http://127.0.0.1:8000/api/v1/health > /dev/null 2>&1 || curl -s --max-time 1 http://127.0.0.1:8000/api/health > /dev/null 2>&1 || curl -s --max-time 1 http://127.0.0.1:8000/ > /dev/null 2>&1; then
-        echo "Server is ready!"
+    if curl -s --noproxy "*" --max-time 1 http://127.0.0.1:8000/api/v1/health > /dev/null 2>&1; then
         SERVER_READY=1
+        echo ""
+        echo "============================================================"
+        echo "    🚀 Server is ready at http://127.0.0.1:8000"
+        echo "============================================================"
         open http://127.0.0.1:8000 2>/dev/null || true
         break
     fi
+    printf "."
     sleep 0.5
 done
 
 if [ $SERVER_READY -eq 0 ]; then
-    echo "Warning: Health check timed out after 30s, but backend process ($BACKEND_PID) is still running."
+    echo ""
+    echo "Notice: Health check took longer than expected, but server process ($BACKEND_PID) is active."
+    echo "Access the dashboard directly at: http://127.0.0.1:8000"
+    open http://127.0.0.1:8000 2>/dev/null || true
 fi
 
 wait $BACKEND_PID
+
 
