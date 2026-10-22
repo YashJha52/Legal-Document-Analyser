@@ -43,7 +43,7 @@ export default function DashboardHub({
       <input
         ref={fileInputRef}
         type="file"
-        accept=".pdf,.docx,.txt"
+        accept=".pdf,.docx,.txt,.png,.jpg,.jpeg,.webp"
         onChange={handleFileChange}
         className="hidden"
       />

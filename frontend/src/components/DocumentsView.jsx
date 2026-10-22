@@ -66,7 +66,7 @@ export default function DocumentsView({
             <span>Upload Contract</span>
             <input
               type="file"
-              accept=".pdf,.txt,.doc,.docx"
+              accept=".pdf,.txt,.doc,.docx,.png,.jpg,.jpeg,.webp"
               onChange={(e) => {
                 if (e.target.files && e.target.files[0]) {
                   onUploadNewDocument(e.target.files[0])
@@ -225,11 +225,11 @@ export default function DocumentsView({
             Drag & drop legal files here to add directly to repository
           </p>
           <span className="font-mono text-[11px] text-on-surface-variant mt-1 inline-block">
-            Supports PDF, DOCX, TXT with automated boundary-preserving chunking
+            Supports PDF, DOCX, TXT, PNG, JPG with automated boundary-preserving chunking
           </span>
           <input
             type="file"
-            accept=".pdf,.txt,.doc,.docx"
+            accept=".pdf,.txt,.doc,.docx,.png,.jpg,.jpeg,.webp"
             onChange={(e) => {
               if (e.target.files && e.target.files[0]) {
                 onUploadNewDocument(e.target.files[0])

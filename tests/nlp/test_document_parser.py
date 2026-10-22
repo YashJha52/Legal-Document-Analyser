@@ -31,3 +31,14 @@ def test_parse_document_string_and_bytes():
 def test_parse_document_empty_input():
     assert parse_document("") == ""
     assert parse_document(None) == ""
+
+def test_parse_document_image_ocr():
+    import io
+    from PIL import Image, ImageDraw
+    img = Image.new("RGB", (400, 100), color=(255, 255, 255))
+    draw = ImageDraw.Draw(img)
+    draw.text((10, 30), "POLICE STATION REPORT", fill=(0, 0, 0))
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    parsed_text = parse_document(buf.getvalue(), "sample.png")
+    assert "POLICE" in parsed_text or "STATION" in parsed_text or "REPORT" in parsed_text

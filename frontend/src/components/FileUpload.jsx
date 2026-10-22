@@ -78,7 +78,7 @@ export default function FileUpload({ onAnalyze, isAnalyzing }) {
             <input
               ref={fileInputRef}
               type="file"
-              accept=".pdf,.txt,.doc,.docx"
+              accept=".pdf,.txt,.doc,.docx,.png,.jpg,.jpeg,.webp"
               onChange={handleFileChange}
               className="hidden"
             />
@@ -91,7 +91,7 @@ export default function FileUpload({ onAnalyze, isAnalyzing }) {
             <p className="font-mono text-xs text-on-surface-variant mb-4">
               {selectedFile
                 ? `${(selectedFile.size / 1024).toFixed(1)} KB selected`
-                : "Drag & drop PDF, TXT, or DOCX files here"}
+                : "Drag & drop PDF, TXT, DOCX, or scanned document images (PNG, JPG)"}
             </p>
             <button
               type="button"

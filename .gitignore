@@ -67,6 +67,7 @@ data/chroma_db/
 data/raw/*
 !data/raw/.gitkeep
 training_files/
+data/sample_docs/*
 
 # Temporary / Extracted Archives & Node Binaries
 *.tar.gz

@@ -60,6 +60,10 @@ def extract_clauses_and_entities_llm(text, max_tokens=1800):
         return extract_clauses_and_entities_heuristic(text)
     prompt = f"""<|im_start|>system
 You are an expert legal AI assistant. Analyze the provided legal text and output STRICT JSON only without Markdown formatting or explanations. Classify `document_type` as one of: `supreme_court_judgment`, `court_judgment`, `fir`, `court_summons`, `subpoena`, `legal_notice`, `case_file`, or `commercial_contract`.
+Accurately calibrate `risk_score` as an integer from 0 to 100 based on legal exposure:
+- Low (0-29): Balanced commercial contracts, court acquittals, or allowed appeals.
+- Medium (30-65): Standard commercial terms, routine operational asymmetry, or dismissed appeals.
+- High (66-100): Criminal FIRs facing chargesheet and trial prosecution, criminal convictions, contempt summons, or uncapped indemnity.
 JSON format:
 {{
   "entities": {{
@@ -76,20 +80,20 @@ JSON format:
       "clause_type": "indemnification",
       "title": "Indemnification",
       "text": "original clause excerpt",
-      "risk_level": "High",
-      "risk_rationale": "Broad unilateral liability",
-      "plain_english_meaning": "You must pay for legal claims against them.",
+      "risk_level": "Medium",
+      "risk_rationale": "Standard mutual liability with carve-outs.",
+      "plain_english_meaning": "Parties cover claims caused by their own breach.",
       "negotiation_tip": "Require mutual parity and cap indemnification."
     }}
   ],
   "risk_analysis": {{
-    "overall_risk": "High",
-    "risk_score": 75,
-    "verdict": "High risk identified in indemnity clause.",
-    "high_risk_count": 1,
-    "medium_risk_count": 0,
+    "overall_risk": "Medium",
+    "risk_score": 45,
+    "verdict": "Moderate Legal Exposure (45/100): Standard commercial terms with manageable covenants.",
+    "high_risk_count": 0,
+    "medium_risk_count": 1,
     "low_risk_count": 0,
-    "critical_flags": ["Broad indemnification requirement"]
+    "critical_flags": ["Mutual indemnification requirement"]
   }}
 }}<|im_end|>
 <|im_start|>user

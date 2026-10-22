@@ -50,7 +50,7 @@ BACKEND_PID=$!
 # Wait for the server to actually be ready
 printf "Waiting for server to start"
 SERVER_READY=0
-for i in $(seq 1 80); do
+for i in $(seq 1 140); do
     if ! kill -0 $BACKEND_PID 2>/dev/null; then
         echo ""
         echo "Error: Server process exited unexpectedly."
@@ -66,6 +66,9 @@ for i in $(seq 1 80); do
         break
     fi
     printf "."
+    if [ $i -eq 60 ]; then
+        printf "\n[Cold-start: Initializing Python AST bytecode & ML runtime... please wait]"
+    fi
     sleep 0.5
 done
 
